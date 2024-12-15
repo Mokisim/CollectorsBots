@@ -39,7 +39,7 @@ public class BaseScanner : MonoBehaviour
 
         foreach (Collider collider in hitColliders)
         {
-            if (collider.TryGetComponent(out Resource resource) && collider.gameObject.activeSelf == true)
+            if (collider.TryGetComponent(out Resource resource) && collider.gameObject.activeSelf == true && resource.IsTacked == false)
             {
                 resources.Add(collider.GetComponent<Resource>());
             } 

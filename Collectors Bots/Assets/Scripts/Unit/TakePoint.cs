@@ -22,7 +22,7 @@ public class TakePoint : MonoBehaviour
 
     private void OnTriggerEnter(Collider collision)
     {
-        if (collision.TryGetComponent(out Resource resource) == true)
+        if (collision.TryGetComponent(out Resource resource) == true && resource.IsTacked == false)
         {
             _resource = resource;
             TargetReached.Invoke(_baseIndex);

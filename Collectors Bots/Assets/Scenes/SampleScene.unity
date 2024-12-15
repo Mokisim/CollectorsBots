@@ -242,7 +242,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _spawnPointsContainer: {fileID: 383118341}
   _pool: {fileID: 187723819}
-  _spawnRate: 60
+  _spawnRate: 10
 --- !u!4 &383118341
 Transform:
   m_ObjectHideFlags: 0

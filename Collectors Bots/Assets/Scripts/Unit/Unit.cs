@@ -10,7 +10,7 @@ public class Unit : MonoBehaviour
 
     [SerializeField] private float _speed = 10;
     [SerializeField] private TakePoint _takePoint;
-    
+
     private Transform _baseTransform;
 
     private Rigidbody _rigidbody;
@@ -18,7 +18,7 @@ public class Unit : MonoBehaviour
     private int _baseIndex = 2;
     private int _stayIndex = 0;
     private int _gettedIndex;
-    
+
     private bool _isResourceReached => IsResourceReached;
     private Resource _resource => Resource;
 
@@ -37,7 +37,7 @@ public class Unit : MonoBehaviour
         {
             GoTarget(_resourceIndex);
         }
-        else if(_gettedIndex != _stayIndex)
+        else if (_gettedIndex != _stayIndex)
         {
             GoTarget(_gettedIndex);
         }
@@ -57,7 +57,7 @@ public class Unit : MonoBehaviour
     {
         _gettedIndex = targetIndex;
 
-        if(_gettedIndex == _stayIndex)
+        if (_gettedIndex == _stayIndex)
         {
             ArrivedBase.Invoke(this);
         }

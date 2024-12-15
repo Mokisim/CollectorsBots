@@ -57,10 +57,18 @@ public class Base : MonoBehaviour
         {
             while(_freeUnits.Count > 0)
             {
-                _freeUnits.First().Resource = _aviableRecources.First();
-                _freeUnits.First().IsResourceReached = false;
-                _freeUnits.Remove(_freeUnits.First());
-                _aviableRecources.Remove(_aviableRecources.First());
+                if (_aviableRecources.First().IsAssigned == false)
+                {
+                    _freeUnits.First().Resource = _aviableRecources.First();
+                    _freeUnits.First().IsResourceReached = false;
+                    _freeUnits.Remove(_freeUnits.First());
+                    _aviableRecources.First().IsAssigned = true;
+                    _aviableRecources.Remove(_aviableRecources.First());
+                }
+                else
+                {
+                    return;
+                }
 
                 if(_aviableRecources.Count == 0)
                 {
