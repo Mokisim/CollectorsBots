@@ -6,6 +6,7 @@ using UnityEngine;
 
 public class Base : MonoBehaviour
 {
+    public event Action ResourceGetted;
     private event Action ResourcesReceived;
 
     [SerializeField] private BaseScanner _scanner;
@@ -52,7 +53,7 @@ public class Base : MonoBehaviour
 
     private void SendUnits()
     {
-        if (_freeUnits.Count > 0)
+        if (_freeUnits.Count > 0 && _aviableRecources.Count > 0)
         {
             while(_freeUnits.Count > 0)
             {
@@ -60,6 +61,11 @@ public class Base : MonoBehaviour
                 _freeUnits.First().IsResourceReached = false;
                 _freeUnits.Remove(_freeUnits.First());
                 _aviableRecources.Remove(_aviableRecources.First());
+
+                if(_aviableRecources.Count == 0)
+                {
+                    return;
+                }
             }
         }
     }
@@ -67,5 +73,6 @@ public class Base : MonoBehaviour
     private void GetUnits(Unit unit)
     {
         _freeUnits.Add(unit);
+        ResourceGetted.Invoke();
     }
 }

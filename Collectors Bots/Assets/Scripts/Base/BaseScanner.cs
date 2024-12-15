@@ -42,7 +42,7 @@ public class BaseScanner : MonoBehaviour
             if (collider.TryGetComponent(out Resource resource) && collider.gameObject.activeSelf == true)
             {
                 resources.Add(collider.GetComponent<Resource>());
-            }
+            } 
         }
 
         foreach (Resource resource in resources)
