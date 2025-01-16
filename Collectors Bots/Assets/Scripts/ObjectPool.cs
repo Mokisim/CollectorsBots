@@ -7,10 +7,19 @@ public class ObjectPool : MonoBehaviour
 {
     [SerializeField] private Transform _container;
     [SerializeField] private Transform _prefab;
+    [SerializeField] private LevelCleaner _cleaner;
 
     private Queue<Transform> _pool;
 
-    public IEnumerable<Component> PooledObjects => _pool;
+    public IEnumerable<Component> PooledObjects 
+    {
+        get 
+        {  
+            return _pool; 
+        }
+
+        private set { }
+    }
 
     private void Awake()
     {
@@ -36,13 +45,8 @@ public class ObjectPool : MonoBehaviour
         component.gameObject.SetActive(false);
     }
 
-    public void Reset()
+    public void ReturnAllObjects()
     {
-        _pool.Clear();
-
-        for(int i = 0; i < _container.childCount; i++)
-        {
-            Destroy(_container.GetChild(i).gameObject);
-        }
+        _cleaner.CleanLevel();
     }
 }

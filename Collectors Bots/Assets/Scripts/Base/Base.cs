@@ -6,14 +6,24 @@ using UnityEngine;
 
 public class Base : MonoBehaviour
 {
-    public event Action ResourceGetted;
-    private event Action ResourcesReceived;
-
     [SerializeField] private BaseScanner _scanner;
     [SerializeField] private List<Unit> _allUnits = new List<Unit>();
 
+    public event Action ResourceGetted;
+    public event Action ResourcesReceived;
+
     private List<Resource> _aviableRecources = new List<Resource>();
     private List<Unit> _freeUnits = new List<Unit>();
+
+    public List<Unit> AllUnits
+    {
+        get
+        {
+            return AllUnits = _allUnits;
+        }
+
+        private set { }
+    }
 
     private void Awake()
     {
@@ -28,7 +38,7 @@ public class Base : MonoBehaviour
         _scanner.ResourcesFound += GetScannedResources;
         ResourcesReceived += SendUnits;
 
-        foreach(Unit unit in _allUnits)
+        foreach (Unit unit in _allUnits)
         {
             unit.ArrivedBase += GetUnits;
         }
@@ -55,25 +65,14 @@ public class Base : MonoBehaviour
     {
         if (_freeUnits.Count > 0 && _aviableRecources.Count > 0)
         {
-            while(_freeUnits.Count > 0)
+            while (_freeUnits.Count > 0 && _aviableRecources.Count > 0)
             {
-                if (_aviableRecources.First().IsAssigned == false)
-                {
-                    _freeUnits.First().Resource = _aviableRecources.First();
-                    _freeUnits.First().IsResourceReached = false;
-                    _freeUnits.Remove(_freeUnits.First());
-                    _aviableRecources.First().IsAssigned = true;
-                    _aviableRecources.Remove(_aviableRecources.First());
-                }
-                else
-                {
-                    return;
-                }
+                Unit firstUnit = _freeUnits.First();
 
-                if(_aviableRecources.Count == 0)
-                {
-                    return;
-                }
+                firstUnit.Resource = _aviableRecources.First();
+                firstUnit.IsResourceReached = false;
+                _freeUnits.Remove(firstUnit);
+                _aviableRecources.Remove(_aviableRecources.First());
             }
         }
     }

@@ -4,13 +4,12 @@ using UnityEngine;
 public class ResourceCounter : MonoBehaviour
 {
     [SerializeField] private TMP_Text _score;
+    [SerializeField] private Base _base;
 
-    private Base _base;
     private int _startResources;
 
     private void Awake()
     {
-        _base = FindObjectOfType<Base>();
         _startResources = 0;
     }
 
@@ -26,6 +25,6 @@ public class ResourceCounter : MonoBehaviour
 
     private void AddResource()
     {
-        _score.text = "Ресурсы:" + " " + ++_startResources;
+        _score.text = $"Ресурсы: {++_startResources}";
     }
 }

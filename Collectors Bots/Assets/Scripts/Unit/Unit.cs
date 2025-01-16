@@ -6,12 +6,11 @@ using UnityEngine;
 [RequireComponent(typeof(Rigidbody))]
 public class Unit : MonoBehaviour
 {
-    public event Action<Unit> ArrivedBase;
-
     [SerializeField] private float _speed = 10;
     [SerializeField] private TakePoint _takePoint;
+    [SerializeField] private Transform _baseTransform;
 
-    private Transform _baseTransform;
+    public event Action<Unit> ArrivedBase;
 
     private Rigidbody _rigidbody;
     private int _resourceIndex = 1;
@@ -22,13 +21,12 @@ public class Unit : MonoBehaviour
     private bool _isResourceReached => IsResourceReached;
     private Resource _resource => Resource;
 
-    public Resource Resource;
-    public bool IsResourceReached;
+    public Resource Resource { get; set; }
+    public bool IsResourceReached { get; set; }
 
     private void Awake()
     {
         _rigidbody = GetComponent<Rigidbody>();
-        _baseTransform = FindAnyObjectByType<Base>().transform;
     }
 
     private void Update()

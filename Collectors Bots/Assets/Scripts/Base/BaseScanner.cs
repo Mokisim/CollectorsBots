@@ -7,50 +7,77 @@ using UnityEngine.UI;
 
 public class BaseScanner : MonoBehaviour
 {
+    [SerializeField] private Vector3 _halfExtents;
+    [SerializeField] private Base _base;
+    [SerializeField] private float _scanRate = 5f;
+
     public event Action<List<Resource>> ResourcesFound;
 
-    [SerializeField] private Button _scanButton;
-    [SerializeField] private Vector3 _halfExtents;
-
-    private List<Resource> _resourcesFound;
-
+    private List<Unit> _unitsOnLevel = new List<Unit>();
+    private bool _isActive;
+    private WaitForSeconds _scanCooldown;
+    private Coroutine _coroutine;
+    
     private void Awake()
     {
-        _resourcesFound = new List<Resource>();
+        _scanCooldown = new WaitForSeconds(_scanRate);
+    }
+
+    private void Start()
+    {
+        _coroutine = StartCoroutine(PeriodicScan());
+        _unitsOnLevel = _base.AllUnits;
     }
 
     private void OnEnable()
     {
-        _scanButton?.onClick.AddListener(Scan);
+        _isActive = true;
     }
 
     private void OnDisable()
     {
-        _scanButton?.onClick.RemoveListener(Scan);
+        _isActive = false;
+        StopCoroutine(_coroutine);
     }
 
     private void Scan()
     {
-        _resourcesFound.Clear();
-
+        int recurringResources = 0;
         Collider[] hitColliders = Physics.OverlapBox(transform.position, _halfExtents / 2, Quaternion.identity);
 
         List<Resource> resources = new List<Resource>();
 
         foreach (Collider collider in hitColliders)
         {
-            if (collider.TryGetComponent(out Resource resource) && collider.gameObject.activeSelf == true && resource.IsTacked == false)
+            if (collider.TryGetComponent(out Resource resource) && collider.gameObject.activeSelf == true)
             {
-                resources.Add(collider.GetComponent<Resource>());
-            } 
+                foreach(Unit unitOnLevel in _unitsOnLevel)
+                {
+                    if(unitOnLevel.Resource == resource)
+                    {
+                        recurringResources++;
+                    }
+                }
+
+                if (recurringResources == 0)
+                {
+                    resources.Add(resource);
+                }
+            }
         }
 
-        foreach (Resource resource in resources)
+        ResourcesFound.Invoke(resources);
+        resources.Clear();
+    }
+
+    private IEnumerator PeriodicScan()
+    {
+        while (_isActive == true)
         {
-            _resourcesFound.Add(resource);
-        }
+            Scan();
 
-        ResourcesFound.Invoke(_resourcesFound);
+            yield return _scanCooldown;
+        }
     }
 
     private void OnDrawGizmos()

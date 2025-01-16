@@ -11,7 +11,7 @@ public class ResourceSpawner : MonoBehaviour
 
     private List<Transform> _spawnPoints = new List<Transform>();
     private WaitForSeconds _cooldown;
-    private int _spawnCount = 4;
+    private int _spawnCount = 6;
 
     private bool _isActive = true;
 

@@ -6,23 +6,27 @@ using UnityEngine;
 [RequireComponent(typeof(SphereCollider))]
 public class TakePoint : MonoBehaviour
 {
+    [SerializeField] private Unit _unit;
+    [SerializeField] private ObjectPool _pool;
+
     public event Action<int> TargetReached;
 
-    [SerializeField] private Unit _unit;
-
-    private ObjectPool _pool;
     private int _stayIndex = 0;
     private int _baseIndex = 2;
     private Resource _resource;
 
-    private void Awake()
+    public Unit Unit
     {
-        _pool = FindObjectOfType<ObjectPool>();
+        get 
+        { 
+            return _unit; 
+        }
+        private set { }
     }
 
     private void OnTriggerEnter(Collider collision)
     {
-        if (collision.TryGetComponent(out Resource resource) == true && resource.IsTacked == false)
+        if (collision.TryGetComponent(out Resource resource) == true && _unit.Resource == resource)
         {
             _resource = resource;
             TargetReached.Invoke(_baseIndex);
@@ -32,10 +36,6 @@ public class TakePoint : MonoBehaviour
             if (_resource != null)
             {
                 TargetReached?.Invoke(_stayIndex);
-            }
-
-            if (_resource != null)
-            {
                 _pool.PutObject(_resource.transform);
                 _resource = null;
             }
