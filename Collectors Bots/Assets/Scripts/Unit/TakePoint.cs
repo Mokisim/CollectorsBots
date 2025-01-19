@@ -22,7 +22,7 @@ public class TakePoint : MonoBehaviour
         if (collision.TryGetComponent(out Resource resource) == true && _unit.Resource == resource)
         {
             _resource = resource;
-            _resource.Get(this.transform);
+            _resource.Take(this.transform);
             TargetReached.Invoke(_baseIndex);
         }
         else if (collision.TryGetComponent(out Base @base) == true && _unit.Resource != null)

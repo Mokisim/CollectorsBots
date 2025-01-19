@@ -14,7 +14,7 @@ public class Resource : MonoBehaviour
         }
     }
 
-    public void Get(Transform takePoint)
+    public void Take(Transform takePoint)
     {
         _takePointTransform = takePoint;
     }

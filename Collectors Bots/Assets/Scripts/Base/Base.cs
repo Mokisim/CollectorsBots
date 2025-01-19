@@ -6,21 +6,22 @@ using UnityEngine;
 
 public class Base : MonoBehaviour
 {
-    [SerializeField] private BaseScanner _scanner;
+    [SerializeField] private ResourceScanner _scanner;
     [SerializeField] private List<Unit> _allUnits = new List<Unit>();
 
-
+    private List<Unit> _allUnitsCopy = new List<Unit>();
     private List<Resource> _aviableRecources = new List<Resource>();
     private List<Unit> _freeUnits = new List<Unit>();
     private int _baseResources;
 
     public event Action ResourcesReceived;
     public event Action ResourcesUpdated;
-    public List<Unit> AllUnits => _allUnits;
+    public List<Unit> AllUnits => _allUnitsCopy;
     public int BaseResources => _baseResources;
 
     private void Awake()
     {
+        _allUnitsCopy = _allUnits;
         _baseResources = 0;
 
         foreach (Unit unit in _allUnits)
