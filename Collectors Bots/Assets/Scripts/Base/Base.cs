@@ -9,24 +9,20 @@ public class Base : MonoBehaviour
     [SerializeField] private BaseScanner _scanner;
     [SerializeField] private List<Unit> _allUnits = new List<Unit>();
 
-    public event Action ResourceGetted;
-    public event Action ResourcesReceived;
 
     private List<Resource> _aviableRecources = new List<Resource>();
     private List<Unit> _freeUnits = new List<Unit>();
+    private int _baseResources;
 
-    public List<Unit> AllUnits
-    {
-        get
-        {
-            return AllUnits = _allUnits;
-        }
-
-        private set { }
-    }
+    public event Action ResourcesReceived;
+    public event Action ResourcesUpdated;
+    public List<Unit> AllUnits => _allUnits;
+    public int BaseResources => _baseResources;
 
     private void Awake()
     {
+        _baseResources = 0;
+
         foreach (Unit unit in _allUnits)
         {
             _freeUnits.Add(unit);
@@ -69,8 +65,8 @@ public class Base : MonoBehaviour
             {
                 Unit firstUnit = _freeUnits.First();
 
-                firstUnit.Resource = _aviableRecources.First();
-                firstUnit.IsResourceReached = false;
+                firstUnit.SetResource(_aviableRecources.First());
+                firstUnit.SetUnreached();
                 _freeUnits.Remove(firstUnit);
                 _aviableRecources.Remove(_aviableRecources.First());
             }
@@ -80,6 +76,7 @@ public class Base : MonoBehaviour
     private void GetUnits(Unit unit)
     {
         _freeUnits.Add(unit);
-        ResourceGetted.Invoke();
+        _baseResources++;
+        ResourcesUpdated.Invoke();
     }
 }

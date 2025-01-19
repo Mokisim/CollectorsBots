@@ -11,15 +11,7 @@ public class ObjectPool : MonoBehaviour
 
     private Queue<Transform> _pool;
 
-    public IEnumerable<Component> PooledObjects 
-    {
-        get 
-        {  
-            return _pool; 
-        }
-
-        private set { }
-    }
+    public IEnumerable<Component> PooledObjects => _pool;
 
     private void Awake()
     {

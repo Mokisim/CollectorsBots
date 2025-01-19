@@ -18,12 +18,12 @@ public class Unit : MonoBehaviour
     private int _stayIndex = 0;
     private int _gettedIndex;
 
-    private bool _isResourceReached => IsResourceReached;
-    private Resource _resource => Resource;
+    private bool _isResourceReached;
 
-    public Resource Resource { get; set; }
-    public bool IsResourceReached { get; set; }
+    private Resource _resource;
 
+    public Resource Resource => _resource;
+    
     private void Awake()
     {
         _rigidbody = GetComponent<Rigidbody>();
@@ -51,6 +51,26 @@ public class Unit : MonoBehaviour
         _takePoint.TargetReached -= GoTarget;
     }
 
+    public void SetReached()
+    {
+        _isResourceReached = true;
+    }
+
+    public void SetUnreached()
+    {
+        _isResourceReached = false;
+    }
+
+    public void ClearResource()
+    {
+        _resource = null;
+    }
+
+    public void SetResource(Resource resource)
+    {
+        _resource = resource;
+    }
+
     private void GoTarget(int targetIndex)
     {
         _gettedIndex = targetIndex;
@@ -63,20 +83,30 @@ public class Unit : MonoBehaviour
         switch (targetIndex)
         {
             case var value when value == _stayIndex:
-                Resource = null;
+                ClearResource();
                 return;
 
             case var value when value == _resourceIndex:
-                transform.position = Vector3.MoveTowards(transform.position, _resource.transform.position, _speed * Time.deltaTime);
-                LookAtTarget(_resource.transform);
+                GoToResource();
                 break;
 
             case var value when value == _baseIndex:
-                IsResourceReached = true;
-                transform.position = Vector3.MoveTowards(transform.position, _baseTransform.position, _speed * Time.deltaTime);
-                LookAtTarget(_baseTransform);
+                GoToBase();
                 break;
         }
+    }
+
+    private void GoToResource()
+    {
+        transform.position = Vector3.MoveTowards(transform.position, _resource.transform.position, _speed * Time.deltaTime);
+        LookAtTarget(_resource.transform);
+    }
+
+    private void GoToBase()
+    {
+        _isResourceReached = true;
+        transform.position = Vector3.MoveTowards(transform.position, _baseTransform.position, _speed * Time.deltaTime);
+        LookAtTarget(_baseTransform);
     }
 
     private void LookAtTarget(Transform target)

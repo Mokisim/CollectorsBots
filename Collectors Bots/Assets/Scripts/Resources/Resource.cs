@@ -8,22 +8,19 @@ public class Resource : MonoBehaviour
 
     private void Update()
     {
-        if (_takePointTransform != null)
+        if(_takePointTransform != null)
         {
             transform.position = _takePointTransform.position;
         }
     }
 
-    private void OnTriggerEnter(Collider collision)
+    public void Get(Transform takePoint)
     {
-        if (collision.TryGetComponent(out TakePoint takePoint) == true && takePoint.Unit.Resource == this)
-        {
-            _takePointTransform = takePoint.transform;
-        }
+        _takePointTransform = takePoint;
     }
 
-    private void OnDisable()
+    public void Put()
     {
         _takePointTransform = null;
-    }
+    } 
 }
