@@ -1,6 +1,4 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 [RequireComponent(typeof(Rigidbody))]
@@ -10,7 +8,6 @@ public class Unit : MonoBehaviour
     [SerializeField] private TakePoint _takePoint;
     [SerializeField] private Transform _baseTransform;
 
-    public event Action<Unit> ArrivedBase;
 
     private Rigidbody _rigidbody;
     private int _resourceIndex = 1;
@@ -21,6 +18,9 @@ public class Unit : MonoBehaviour
     private bool _isResourceReached;
 
     private Resource _resource;
+
+    public event Action<Unit> ArrivedBase;
+    public event Action GiveResource;
 
     public Resource Resource => _resource;
     
@@ -64,11 +64,13 @@ public class Unit : MonoBehaviour
     public void ClearResource()
     {
         _resource = null;
+        _takePoint.GetResource(null);
     }
 
     public void SetResource(Resource resource)
     {
         _resource = resource;
+        _takePoint.GetResource(resource);
     }
 
     private void GoTarget(int targetIndex)
@@ -78,6 +80,7 @@ public class Unit : MonoBehaviour
         if (_gettedIndex == _stayIndex)
         {
             ArrivedBase.Invoke(this);
+            GiveResource.Invoke();
         }
 
         switch (targetIndex)

@@ -1,5 +1,4 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -14,7 +13,6 @@ public class Base : MonoBehaviour
     private List<Unit> _freeUnits = new List<Unit>();
     private int _baseResources;
 
-    public event Action ResourcesReceived;
     public event Action ResourcesUpdated;
     public List<Unit> AllUnits => _allUnitsCopy;
     public int BaseResources => _baseResources;
@@ -33,19 +31,18 @@ public class Base : MonoBehaviour
     private void OnEnable()
     {
         _scanner.ResourcesFound += GetScannedResources;
-        ResourcesReceived += SendUnits;
-
+        
         foreach (Unit unit in _allUnits)
         {
             unit.ArrivedBase += GetUnits;
+            unit.GiveResource += AddResource;
         }
     }
 
     private void OnDisable()
     {
         _scanner.ResourcesFound -= GetScannedResources;
-        ResourcesReceived -= SendUnits;
-
+        
         foreach (Unit unit in _allUnits)
         {
             unit.ArrivedBase -= GetUnits;
@@ -55,7 +52,7 @@ public class Base : MonoBehaviour
     private void GetScannedResources(List<Resource> targetRecources)
     {
         _aviableRecources = targetRecources;
-        ResourcesReceived.Invoke();
+        SendUnits();
     }
 
     private void SendUnits()
@@ -77,6 +74,10 @@ public class Base : MonoBehaviour
     private void GetUnits(Unit unit)
     {
         _freeUnits.Add(unit);
+    }
+
+    private void AddResource()
+    {
         _baseResources++;
         ResourcesUpdated.Invoke();
     }

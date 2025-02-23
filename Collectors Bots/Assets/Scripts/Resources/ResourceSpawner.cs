@@ -1,17 +1,15 @@
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
 
 public class ResourceSpawner : MonoBehaviour
 {
-    [SerializeField] private Transform _spawnPointsContainer;
     [SerializeField] private ObjectPool _pool;
     [SerializeField] private float _spawnRate = 120;
+    [SerializeField]private List<Transform> _spawnPoints = new List<Transform>();
+    [SerializeField]private int _spawnCount = 6;
 
-    private List<Transform> _spawnPoints = new List<Transform>();
     private WaitForSeconds _cooldown;
-    private int _spawnCount = 6;
 
     private bool _isActive = true;
 
@@ -19,11 +17,6 @@ public class ResourceSpawner : MonoBehaviour
 
     private void Awake()
     {
-        for (int i = 0; i < _spawnPointsContainer.childCount; i++)
-        {
-            _spawnPoints.Add(_spawnPointsContainer.GetChild(i));
-        }
-
         _cooldown = new WaitForSeconds(_spawnRate);
     }
 

@@ -1,13 +1,11 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
-using UnityEngine.UI;
 
 public class ResourceScanner : MonoBehaviour
 {
-    [SerializeField] private Vector3 _halfExtents;
+    [SerializeField] private Vector3 _extents;
     [SerializeField] private Base _base;
     [SerializeField] private float _scanRate = 5f;
 
@@ -17,7 +15,7 @@ public class ResourceScanner : MonoBehaviour
     private bool _isActive;
     private WaitForSeconds _scanCooldown;
     private Coroutine _coroutine;
-    private int _halfExtentsScaler = 2;
+    private int _extentsScaler = 2;
     
     private void Awake()
     {
@@ -44,7 +42,7 @@ public class ResourceScanner : MonoBehaviour
     private void Scan()
     {
         int recurringResources = 0;
-        Collider[] hitColliders = Physics.OverlapBox(transform.position, _halfExtents / _halfExtentsScaler, Quaternion.identity);
+        Collider[] hitColliders = Physics.OverlapBox(transform.position, _extents / _extentsScaler, Quaternion.identity);
 
         List<Resource> resources = new List<Resource>();
 
@@ -85,6 +83,6 @@ public class ResourceScanner : MonoBehaviour
     {
         Gizmos.color = Color.red;
 
-        Gizmos.DrawWireCube(transform.position, _halfExtents);
+        Gizmos.DrawWireCube(transform.position, _extents);
     }
 }
