@@ -46,6 +46,7 @@ public class Base : MonoBehaviour
         foreach (Unit unit in _allUnits)
         {
             unit.ArrivedBase -= GetUnits;
+            unit.GiveResource -= AddResource;
         }
     }
 

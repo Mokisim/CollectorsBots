@@ -7,7 +7,7 @@ public class ResourceScanner : MonoBehaviour
 {
     [SerializeField] private Vector3 _extents;
     [SerializeField] private Base _base;
-    [SerializeField] private float _scanRate = 5f;
+    [SerializeField] private float _scanDelay = 5f;
 
     public event Action<List<Resource>> ResourcesFound;
 
@@ -19,7 +19,7 @@ public class ResourceScanner : MonoBehaviour
     
     private void Awake()
     {
-        _scanCooldown = new WaitForSeconds(_scanRate);
+        _scanCooldown = new WaitForSeconds(_scanDelay);
     }
 
     private void Start()
@@ -36,7 +36,11 @@ public class ResourceScanner : MonoBehaviour
     private void OnDisable()
     {
         _isActive = false;
-        StopCoroutine(_coroutine);
+
+        if (_coroutine != null)
+        {
+            StopCoroutine(_coroutine);
+        }
     }
 
     private void Scan()
@@ -71,7 +75,7 @@ public class ResourceScanner : MonoBehaviour
 
     private IEnumerator PeriodicScan()
     {
-        while (_isActive == true)
+        while (_isActive)
         {
             Scan();
 

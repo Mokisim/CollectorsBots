@@ -13,16 +13,19 @@ public class ResourceSpawner : MonoBehaviour
 
     private bool _isActive = true;
 
-    private Coroutine _coroutine;
-
     private void Awake()
     {
         _cooldown = new WaitForSeconds(_spawnRate);
     }
 
-    private void Start()
+    private void OnEnable()
     {
-        _coroutine = StartCoroutine(SpawnRecources());
+        StartCoroutine(SpawnRecources());
+    }
+
+    private void OnDisable()
+    {
+        StopCoroutine(SpawnRecources());
     }
 
     private IEnumerator SpawnRecources()

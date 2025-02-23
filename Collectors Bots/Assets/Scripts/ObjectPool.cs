@@ -8,14 +8,12 @@ public class ObjectPool : MonoBehaviour
     [SerializeField] private List<TakePoint> _takePoints;
 
     private Queue<Transform> _pool;
-    private List<Transform> _poolObjects;
-
+    
     public IEnumerable<Component> PooledObjects => _pool;
 
     private void Awake()
     {
         _pool = new Queue<Transform>();
-        _poolObjects = new List<Transform>();
     }
 
     private void OnEnable()
@@ -51,18 +49,6 @@ public class ObjectPool : MonoBehaviour
     {
         component.transform.parent = _container;
         _pool.Enqueue(component);
-        _poolObjects.Add(component);
         component.gameObject.SetActive(false);
-    }
-
-    public void ReturnAllObjects()
-    {
-        foreach (Transform objectt in _poolObjects)
-        {
-            if (objectt.gameObject.activeSelf == true)
-            {
-                objectt.gameObject.SetActive(false);
-            }
-        }
     }
 }
