@@ -8,18 +8,16 @@ public class Base : MonoBehaviour
     [SerializeField] private ResourceScanner _scanner;
     [SerializeField] private List<Unit> _allUnits = new List<Unit>();
 
-    private List<Unit> _allUnitsCopy = new List<Unit>();
     private List<Resource> _aviableRecources = new List<Resource>();
     private List<Unit> _freeUnits = new List<Unit>();
     private int _baseResources;
 
     public event Action ResourcesUpdated;
-    public List<Unit> AllUnits => _allUnitsCopy;
+    public IReadOnlyList<Unit> AllUnits => _allUnits.AsReadOnly();
     public int BaseResources => _baseResources;
 
     private void Awake()
     {
-        _allUnitsCopy = _allUnits;
         _baseResources = 0;
 
         foreach (Unit unit in _allUnits)
@@ -31,10 +29,10 @@ public class Base : MonoBehaviour
     private void OnEnable()
     {
         _scanner.ResourcesFound += GetScannedResources;
-        
+
         foreach (Unit unit in _allUnits)
         {
-            unit.ArrivedBase += GetUnits;
+            unit.ArrivedBase += AddFreeUnit;
             unit.GiveResource += AddResource;
         }
     }
@@ -42,10 +40,10 @@ public class Base : MonoBehaviour
     private void OnDisable()
     {
         _scanner.ResourcesFound -= GetScannedResources;
-        
+
         foreach (Unit unit in _allUnits)
         {
-            unit.ArrivedBase -= GetUnits;
+            unit.ArrivedBase -= AddFreeUnit;
             unit.GiveResource -= AddResource;
         }
     }
@@ -58,21 +56,18 @@ public class Base : MonoBehaviour
 
     private void SendUnits()
     {
-        if (_freeUnits.Count > 0 && _aviableRecources.Count > 0)
+        while (_freeUnits.Count > 0 && _aviableRecources.Count > 0)
         {
-            while (_freeUnits.Count > 0 && _aviableRecources.Count > 0)
-            {
-                Unit firstUnit = _freeUnits.First();
+            Unit firstUnit = _freeUnits.First();
 
-                firstUnit.SetResource(_aviableRecources.First());
-                firstUnit.SetUnreached();
-                _freeUnits.Remove(firstUnit);
-                _aviableRecources.Remove(_aviableRecources.First());
-            }
+            firstUnit.SetResource(_aviableRecources.First());
+            firstUnit.SetUnreached();
+            _freeUnits.Remove(firstUnit);
+            _aviableRecources.Remove(_aviableRecources.First());
         }
     }
 
-    private void GetUnits(Unit unit)
+    private void AddFreeUnit(Unit unit)
     {
         _freeUnits.Add(unit);
     }

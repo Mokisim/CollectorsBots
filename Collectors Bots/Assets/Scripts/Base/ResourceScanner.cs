@@ -11,7 +11,6 @@ public class ResourceScanner : MonoBehaviour
 
     public event Action<List<Resource>> ResourcesFound;
 
-    private List<Unit> _unitsOnLevel = new List<Unit>();
     private bool _isActive;
     private WaitForSeconds _scanCooldown;
     private Coroutine _coroutine;
@@ -25,7 +24,6 @@ public class ResourceScanner : MonoBehaviour
     private void Start()
     {
         _coroutine = StartCoroutine(PeriodicScan());
-        _unitsOnLevel = _base.AllUnits;
     }
 
     private void OnEnable()
@@ -54,7 +52,7 @@ public class ResourceScanner : MonoBehaviour
         {
             if (collider.TryGetComponent(out Resource resource) && collider.gameObject.activeSelf == true)
             {
-                foreach(Unit unitOnLevel in _unitsOnLevel)
+                foreach(Unit unitOnLevel in _base.AllUnits)
                 {
                     if(unitOnLevel.Resource == resource)
                     {
