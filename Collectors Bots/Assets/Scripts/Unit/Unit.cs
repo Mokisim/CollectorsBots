@@ -8,51 +8,32 @@ public class Unit : MonoBehaviour
     [SerializeField] private TakePoint _takePoint;
     [SerializeField] private Transform _baseTransform;
 
-
-    private int _resourceIndex = 1;
-    private int _baseIndex = 2;
-    private int _stayIndex = 0;
-    private int _gettedIndex;
-
+    private Transform _target;
+    
     private bool _isResourceReached;
 
     private Resource _resource;
 
-    public event Action<Unit> ArrivedBase;
-    public event Action GiveResource;
+    public event Action<Transform, Unit> TargetReached;
 
     public Resource Resource { get { return _resource; } private set { } }
-    
+
     private void Update()
     {
-        if (Resource != null && _isResourceReached == false)
+        if (_target != null)
         {
-            GoTarget(_resourceIndex);
-        }
-        else if (_gettedIndex != _stayIndex)
-        {
-            GoTarget(_gettedIndex);
+            GoTarget();
         }
     }
 
     private void OnEnable()
     {
-        _takePoint.TargetReached += GoTarget;
+        _takePoint.TargetReached += SayTargetReached;
     }
 
     private void OnDisable()
     {
-        _takePoint.TargetReached -= GoTarget;
-    }
-
-    public void SetReached()
-    {
-        _isResourceReached = true;
-    }
-
-    public void SetUnreached()
-    {
-        _isResourceReached = false;
+        _takePoint.TargetReached -= SayTargetReached;
     }
 
     public void ClearResource()
@@ -67,45 +48,25 @@ public class Unit : MonoBehaviour
         _takePoint.GetResource(resource);
     }
 
-    private void GoTarget(int targetIndex)
+    public void SetTarget(Transform target)
     {
-        _gettedIndex = targetIndex;
+        _target = target;
+    }
 
-        if (_gettedIndex == _stayIndex)
+    private void GoTarget()
+    {
+        if (_target != null)
         {
-            ArrivedBase.Invoke(this);
-            GiveResource.Invoke();
-        }
-
-        switch (targetIndex)
-        {
-            case var value when value == _stayIndex:
-                ClearResource();
-                return;
-
-            case var value when value == _resourceIndex:
-                GoToResource();
-                break;
-
-            case var value when value == _baseIndex:
-                GoToBase();
-                break;
+            transform.position = Vector3.MoveTowards(transform.position, _target.transform.position, _speed * Time.deltaTime);
+            LookAtTarget(_resource.transform);
         }
     }
 
-    private void GoToResource()
+    private void SayTargetReached(Transform reachedTarget)
     {
-        transform.position = Vector3.MoveTowards(transform.position, _resource.transform.position, _speed * Time.deltaTime);
-        LookAtTarget(_resource.transform);
+        TargetReached.Invoke(reachedTarget, this);
     }
-
-    private void GoToBase()
-    {
-        _isResourceReached = true;
-        transform.position = Vector3.MoveTowards(transform.position, _baseTransform.position, _speed * Time.deltaTime);
-        LookAtTarget(_baseTransform);
-    }
-
+    
     private void LookAtTarget(Transform target)
     {
         transform.LookAt(target.position);

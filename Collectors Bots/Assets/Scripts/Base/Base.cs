@@ -32,8 +32,7 @@ public class Base : MonoBehaviour
 
         foreach (Unit unit in _allUnits)
         {
-            unit.ArrivedBase += AddFreeUnit;
-            unit.GiveResource += AddResource;
+            unit.TargetReached += CheckUnitTarget;
         }
     }
 
@@ -43,8 +42,7 @@ public class Base : MonoBehaviour
 
         foreach (Unit unit in _allUnits)
         {
-            unit.ArrivedBase -= AddFreeUnit;
-            unit.GiveResource -= AddResource;
+            unit.TargetReached -= CheckUnitTarget;
         }
     }
 
@@ -61,15 +59,30 @@ public class Base : MonoBehaviour
             Unit firstUnit = _freeUnits.First();
 
             firstUnit.SetResource(_aviableRecources.First());
-            firstUnit.SetUnreached();
+            firstUnit.SetTarget(_aviableRecources.First().transform);
             _freeUnits.Remove(firstUnit);
             _aviableRecources.Remove(_aviableRecources.First());
+        }
+    }
+
+    private void CheckUnitTarget(Transform targetTransform, Unit unit)
+    {
+        if(targetTransform == transform)
+        {
+            unit.SetTarget(null);
+            AddFreeUnit(unit);
+            AddResource();
+        }
+        else
+        {
+            unit.SetTarget(transform);
         }
     }
 
     private void AddFreeUnit(Unit unit)
     {
         _freeUnits.Add(unit);
+        unit.ClearResource();
     }
 
     private void AddResource()
