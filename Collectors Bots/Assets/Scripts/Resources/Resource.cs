@@ -8,6 +8,6 @@ public class Resource : MonoBehaviour
     public void Take(Transform takePoint)
     {
         transform.SetParent(takePoint.parent);
-        transform.localPosition.Set(_zero, _zero, _zero);
+        transform.localPosition = Vector3.zero;
     }
 }
