@@ -9,7 +9,6 @@ public class Unit : MonoBehaviour
     [SerializeField] private Transform _baseTransform;
 
 
-    private Rigidbody _rigidbody;
     private int _resourceIndex = 1;
     private int _baseIndex = 2;
     private int _stayIndex = 0;
@@ -22,13 +21,8 @@ public class Unit : MonoBehaviour
     public event Action<Unit> ArrivedBase;
     public event Action GiveResource;
 
-    public Resource Resource => _resource;
+    public Resource Resource { get { return _resource; } private set { } }
     
-    private void Awake()
-    {
-        _rigidbody = GetComponent<Rigidbody>();
-    }
-
     private void Update()
     {
         if (Resource != null && _isResourceReached == false)
