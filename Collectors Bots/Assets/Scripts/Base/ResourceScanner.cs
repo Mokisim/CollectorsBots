@@ -6,7 +6,6 @@ using UnityEngine;
 public class ResourceScanner : MonoBehaviour
 {
     [SerializeField] private Vector3 _extents;
-    [SerializeField] private Base _base;
     [SerializeField] private float _scanDelay = 5f;
 
     public event Action<List<Resource>> ResourcesFound;
@@ -15,7 +14,7 @@ public class ResourceScanner : MonoBehaviour
     private WaitForSeconds _scanCooldown;
     private Coroutine _coroutine;
     private int _extentsScaler = 2;
-    
+
     private void Awake()
     {
         _scanCooldown = new WaitForSeconds(_scanDelay);
@@ -43,7 +42,6 @@ public class ResourceScanner : MonoBehaviour
 
     private void Scan()
     {
-        int recurringResources = 0;
         Collider[] hitColliders = Physics.OverlapBox(transform.position, _extents / _extentsScaler, Quaternion.identity);
 
         List<Resource> resources = new List<Resource>();
@@ -52,18 +50,7 @@ public class ResourceScanner : MonoBehaviour
         {
             if (collider.TryGetComponent(out Resource resource) && collider.gameObject.activeSelf == true)
             {
-                foreach(Unit unitOnLevel in _base.AllUnits)
-                {
-                    if(unitOnLevel.Resource == resource)
-                    {
-                        recurringResources++;
-                    }
-                }
-
-                if (recurringResources == 0)
-                {
-                    resources.Add(resource);
-                }
+                resources.Add(resource);
             }
         }
 

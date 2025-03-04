@@ -48,7 +48,7 @@ public class Base : MonoBehaviour
 
     private void GetScannedResources(List<Resource> targetRecources)
     {
-        _aviableRecources = targetRecources;
+        SortFoundedResources(targetRecources);
         SendUnits();
     }
 
@@ -58,16 +58,55 @@ public class Base : MonoBehaviour
         {
             Unit firstUnit = _freeUnits.First();
 
-            firstUnit.SetResource(_aviableRecources.First());
-            firstUnit.SetTarget(_aviableRecources.First().transform);
-            _freeUnits.Remove(firstUnit);
-            _aviableRecources.Remove(_aviableRecources.First());
+            if (_aviableRecources.First().gameObject.activeSelf == true)
+            {
+                firstUnit.SetResource(_aviableRecources.First());
+                firstUnit.SetTarget(_aviableRecources.First().transform);
+                _freeUnits.Remove(firstUnit);
+                _aviableRecources.Remove(_aviableRecources.First());
+            }
+            else
+            {
+                _aviableRecources.Remove(_aviableRecources.First());
+            }
         }
+    }
+
+    private void SortFoundedResources(List<Resource> foundedResources)
+    {
+        _aviableRecources.Clear();
+
+        int recurringResources = 0;
+
+        List<Resource> sortedResources = new List<Resource>();
+
+        foreach (Resource resource in foundedResources)
+        {
+            foreach (Unit unit in _allUnits)
+            {
+                if (unit.Resource == resource)
+                {
+                    recurringResources++;
+                }
+            }
+
+            if (recurringResources == 0)
+            {
+                sortedResources.Add(resource);
+            }
+        }
+
+        foreach (Resource resource in sortedResources)
+        {
+            _aviableRecources.Add(resource);
+        }
+
+        sortedResources.Clear();
     }
 
     private void CheckUnitTarget(Transform targetTransform, Unit unit)
     {
-        if(targetTransform == transform)
+        if (targetTransform == transform)
         {
             unit.SetTarget(null);
             AddFreeUnit(unit);

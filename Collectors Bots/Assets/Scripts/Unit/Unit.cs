@@ -58,7 +58,7 @@ public class Unit : MonoBehaviour
         if (_target != null)
         {
             transform.position = Vector3.MoveTowards(transform.position, _target.transform.position, _speed * Time.deltaTime);
-            LookAtTarget(_resource.transform);
+            LookAtTarget(_target.transform);
         }
     }
 
