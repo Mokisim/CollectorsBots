@@ -55,6 +55,11 @@ public class Unit : MonoBehaviour
         _target = target;
     }
 
+    public void SetBaseTransform(Transform transform)
+    {
+        _baseTransform = transform;
+    }
+
     private void GoTarget()
     {
         if (_target != null)
@@ -68,7 +73,7 @@ public class Unit : MonoBehaviour
     {
         TargetReached.Invoke(reachedTarget, this);
     }
-    
+
     private void LookAtTarget(Transform target)
     {
         transform.LookAt(target.position);

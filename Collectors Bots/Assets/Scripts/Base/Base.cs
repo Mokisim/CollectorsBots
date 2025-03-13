@@ -8,9 +8,11 @@ public class Base : MonoBehaviour
     [SerializeField] private ObjectPool _pool;
     [SerializeField] private ResourceScanner _scanner;
     [SerializeField] private List<Unit> _allUnits = new List<Unit>();
-    [SerializeField]private ResourceStorage _storage;
+    [SerializeField] private ResourceStorage _storage;
+    [SerializeField] private UnitCreator _unitCreator;
 
     private List<Unit> _freeUnits = new List<Unit>();
+    private int _newUnitPrice = 3;
     private int _baseResources;
 
     public event Action ResourcesUpdated;
@@ -28,16 +30,22 @@ public class Base : MonoBehaviour
 
         _storage.SetUnits(_allUnits);
 
-        if(_pool == null)
+        if (_pool == null)
         {
             _pool = FindObjectOfType<ObjectPool>();
         }
+    }
+
+    private void Update()
+    {
+        CheckPossibilityCreatingUnit();
     }
 
     private void OnEnable()
     {
         _scanner.ResourcesFound += _storage.SetResources;
         _storage.ResourcesSorted += SendUnits;
+        _unitCreator.UnitCreated += AddUnit;
 
         foreach (Unit unit in _allUnits)
         {
@@ -81,7 +89,7 @@ public class Base : MonoBehaviour
         if (targetTransform == transform)
         {
             unit.SetTarget(null);
-            AddFreeUnit(unit);
+            AddUnit(unit);
             AddResource();
         }
         else
@@ -90,15 +98,48 @@ public class Base : MonoBehaviour
         }
     }
 
-    private void AddFreeUnit(Unit unit)
+    private void AddUnit(Unit unit)
     {
-        _freeUnits.Add(unit);
-        unit.ClearResource();
+        int recurringUnits = 0;
+
+        foreach (Unit checkingUnit in _allUnits)
+        {
+            if (checkingUnit == unit)
+            {
+                recurringUnits++;
+            }
+        }
+
+        if (recurringUnits == 0)
+        {
+            unit.SetBaseTransform(this.transform);
+            unit.ClearResource();
+            unit.TargetReached += CheckUnitTarget;
+            _allUnits.Add(unit);
+            _freeUnits.Add(unit);
+            _pool.AddUnit(unit);
+            _storage.SetUnits(_allUnits);
+        }
+        else
+        {
+            _freeUnits.Add(unit);
+            unit.ClearResource();
+        }
     }
 
     private void AddResource()
     {
         _baseResources++;
         ResourcesUpdated.Invoke();
+    }
+
+    private void CheckPossibilityCreatingUnit()
+    {
+        if (_baseResources >= _newUnitPrice)
+        {
+            _baseResources -= _newUnitPrice;
+            _unitCreator.CreateUnit(this.transform);
+            ResourcesUpdated.Invoke();
+        }
     }
 }

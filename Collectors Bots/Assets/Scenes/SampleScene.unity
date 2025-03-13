@@ -1690,6 +1690,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 1010062841102735460, guid: 8b66bbd358dfb6b48a44b6aa65c9957f, type: 3}
+      propertyPath: m_IsKinematic
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 1017424280079833619, guid: 8b66bbd358dfb6b48a44b6aa65c9957f, type: 3}
       propertyPath: _pool
       value: 
@@ -1749,10 +1753,6 @@ PrefabInstance:
     - target: {fileID: 3274603861732470233, guid: 8b66bbd358dfb6b48a44b6aa65c9957f, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 7106178064472586581, guid: 8b66bbd358dfb6b48a44b6aa65c9957f, type: 3}
-      propertyPath: _scanDelay
-      value: 2
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
