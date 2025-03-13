@@ -7,6 +7,7 @@ public class Base : MonoBehaviour
 {
     [SerializeField] private ResourceScanner _scanner;
     [SerializeField] private List<Unit> _allUnits = new List<Unit>();
+    [SerializeField]private ResourceStorage _storage;
 
     private List<Resource> _aviableRecources = new List<Resource>();
     private List<Unit> _freeUnits = new List<Unit>();
@@ -24,11 +25,14 @@ public class Base : MonoBehaviour
         {
             _freeUnits.Add(unit);
         }
+
+        _storage.SetUnits(_allUnits);
     }
 
     private void OnEnable()
     {
-        _scanner.ResourcesFound += GetScannedResources;
+        _scanner.ResourcesFound += _storage.SetResources;
+        _storage.ResourcesSorted += SetSortedResources;
 
         foreach (Unit unit in _allUnits)
         {
@@ -38,7 +42,8 @@ public class Base : MonoBehaviour
 
     private void OnDisable()
     {
-        _scanner.ResourcesFound -= GetScannedResources;
+        _scanner.ResourcesFound -= _storage.SetResources;
+        _storage.ResourcesSorted -= SetSortedResources;
 
         foreach (Unit unit in _allUnits)
         {
@@ -46,9 +51,9 @@ public class Base : MonoBehaviour
         }
     }
 
-    private void GetScannedResources(List<Resource> targetRecources)
+    private void SetSortedResources(List<Resource> targetRecources)
     {
-        SortFoundedResources(targetRecources);
+        _aviableRecources = targetRecources;
         SendUnits();
     }
 
@@ -70,38 +75,6 @@ public class Base : MonoBehaviour
                 _aviableRecources.Remove(_aviableRecources.First());
             }
         }
-    }
-
-    private void SortFoundedResources(List<Resource> foundedResources)
-    {
-        _aviableRecources.Clear();
-
-        int recurringResources = 0;
-
-        List<Resource> sortedResources = new List<Resource>();
-
-        foreach (Resource resource in foundedResources)
-        {
-            foreach (Unit unit in _allUnits)
-            {
-                if (unit.Resource == resource)
-                {
-                    recurringResources++;
-                }
-            }
-
-            if (recurringResources == 0)
-            {
-                sortedResources.Add(resource);
-            }
-        }
-
-        foreach (Resource resource in sortedResources)
-        {
-            _aviableRecources.Add(resource);
-        }
-
-        sortedResources.Clear();
     }
 
     private void CheckUnitTarget(Transform targetTransform, Unit unit)
