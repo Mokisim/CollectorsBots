@@ -8,7 +8,9 @@ public class ResourceStorage : MonoBehaviour
     private List<Resource> _allResources = new List<Resource>();
     private List<Unit> _baseUnits = new List<Unit>();
 
-    public event Action<List<Resource>> ResourcesSorted;
+    public event Action ResourcesSorted;
+
+    public IReadOnlyList<Resource> AviableResources => _aviableResources.AsReadOnly();
 
     public void SetUnits(List<Unit> units)
     {
@@ -52,6 +54,11 @@ public class ResourceStorage : MonoBehaviour
 
         sortedResources.Clear();
 
-        ResourcesSorted.Invoke(_aviableResources);
+        ResourcesSorted.Invoke();
+    }
+
+    public void DeleteAssignedResource(Resource resource)
+    {
+        _aviableResources.Remove(resource);
     }
 }

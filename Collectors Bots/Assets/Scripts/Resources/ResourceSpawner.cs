@@ -56,7 +56,10 @@ public class ResourceSpawner : MonoBehaviour
 
         for (int i = 0; i < _spawnCount; i++)
         {
-            _pool.GetObject(_spawnPoints[randomSpawnpoints[i]]);
+            var resource = _pool.GetObject();
+
+            resource.gameObject.SetActive(true);
+            resource.transform.position = _spawnPoints[randomSpawnpoints[i]].position;
         }
     }
 }

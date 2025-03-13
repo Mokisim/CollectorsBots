@@ -5,11 +5,11 @@ using UnityEngine;
 
 public class Base : MonoBehaviour
 {
+    [SerializeField] private ObjectPool _pool;
     [SerializeField] private ResourceScanner _scanner;
     [SerializeField] private List<Unit> _allUnits = new List<Unit>();
     [SerializeField]private ResourceStorage _storage;
 
-    private List<Resource> _aviableRecources = new List<Resource>();
     private List<Unit> _freeUnits = new List<Unit>();
     private int _baseResources;
 
@@ -27,12 +27,17 @@ public class Base : MonoBehaviour
         }
 
         _storage.SetUnits(_allUnits);
+
+        if(_pool == null)
+        {
+            _pool = FindObjectOfType<ObjectPool>();
+        }
     }
 
     private void OnEnable()
     {
         _scanner.ResourcesFound += _storage.SetResources;
-        _storage.ResourcesSorted += SetSortedResources;
+        _storage.ResourcesSorted += SendUnits;
 
         foreach (Unit unit in _allUnits)
         {
@@ -43,7 +48,7 @@ public class Base : MonoBehaviour
     private void OnDisable()
     {
         _scanner.ResourcesFound -= _storage.SetResources;
-        _storage.ResourcesSorted -= SetSortedResources;
+        _storage.ResourcesSorted -= SendUnits;
 
         foreach (Unit unit in _allUnits)
         {
@@ -51,28 +56,22 @@ public class Base : MonoBehaviour
         }
     }
 
-    private void SetSortedResources(List<Resource> targetRecources)
-    {
-        _aviableRecources = targetRecources;
-        SendUnits();
-    }
-
     private void SendUnits()
     {
-        while (_freeUnits.Count > 0 && _aviableRecources.Count > 0)
+        while (_freeUnits.Count > 0 && _storage.AviableResources.Count > 0)
         {
             Unit firstUnit = _freeUnits.First();
 
-            if (_aviableRecources.First().gameObject.activeSelf == true)
+            if (_storage.AviableResources.First().gameObject.activeSelf == true)
             {
-                firstUnit.SetResource(_aviableRecources.First());
-                firstUnit.SetTarget(_aviableRecources.First().transform);
+                firstUnit.SetResource(_storage.AviableResources.First());
+                firstUnit.SetTarget(_storage.AviableResources.First().transform);
                 _freeUnits.Remove(firstUnit);
-                _aviableRecources.Remove(_aviableRecources.First());
+                _storage.DeleteAssignedResource(_storage.AviableResources.First());
             }
             else
             {
-                _aviableRecources.Remove(_aviableRecources.First());
+                _storage.DeleteAssignedResource(_storage.AviableResources.First());
             }
         }
     }

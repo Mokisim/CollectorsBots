@@ -5,7 +5,7 @@ public class ObjectPool : MonoBehaviour
 {
     [SerializeField] private Transform _container;
     [SerializeField] private Transform _prefab;
-    [SerializeField] private List<TakePoint> _takePoints;
+    [SerializeField] private List<Unit> _allUnits;
 
     private Queue<Transform> _pool;
     
@@ -18,25 +18,31 @@ public class ObjectPool : MonoBehaviour
 
     private void OnEnable()
     {
-        foreach(TakePoint takePoint in _takePoints)
+        foreach(Unit unit in _allUnits)
         {
-            takePoint.ResourceReturned += PutObject;
+            unit.TakePoint.ResourceReturned += PutObject;
         }
     }
 
     private void OnDisable()
     {
-        foreach (TakePoint takePoint in _takePoints)
+        foreach (Unit unit in _allUnits)
         {
-            takePoint.ResourceReturned -= PutObject;
+            unit.TakePoint.ResourceReturned -= PutObject;
         }
     }
 
-    public Component GetObject(Transform spawnPointTransform)
+    public void AddUnit(Unit unit)
+    {
+        _allUnits.Add(unit);
+        unit.TakePoint.ResourceReturned += PutObject;
+    }
+
+    public Component GetObject()
     {
         if (_pool.Count == 0)
         {
-            var component = Instantiate(_prefab, spawnPointTransform.position, Quaternion.identity);
+            var component = Instantiate(_prefab, Vector3.zero, transform.rotation);
             component.transform.parent = _container;
 
             return component;

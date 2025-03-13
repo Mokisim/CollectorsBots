@@ -15,6 +15,8 @@ public class Unit : MonoBehaviour
     private Resource _resource;
 
     public event Action<Transform, Unit> TargetReached;
+    
+    public TakePoint TakePoint => _takePoint;
 
     public Resource Resource { get { return _resource; } private set { } }
 
