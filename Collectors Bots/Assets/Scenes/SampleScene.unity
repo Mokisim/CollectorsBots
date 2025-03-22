@@ -606,6 +606,7 @@ GameObject:
   - component: {fileID: 739300013}
   - component: {fileID: 739300012}
   - component: {fileID: 739300016}
+  - component: {fileID: 739300017}
   m_Layer: 0
   m_Name: Plane
   m_TagString: Untagged
@@ -716,7 +717,20 @@ MonoBehaviour:
   _mainCamera: {fileID: 963194227}
   _buildingsOnLevel:
   - {fileID: 1859832190}
-  Available: 0
+  _pool: {fileID: 739300017}
+--- !u!114 &739300017
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 739300010}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa1883bb3d4cf3141b678dea0126c2e7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _container: {fileID: 739300015}
 --- !u!1 &743725106
 GameObject:
   m_ObjectHideFlags: 0
@@ -1010,7 +1024,7 @@ Transform:
   m_GameObject: {fileID: 963194225}
   serializedVersion: 2
   m_LocalRotation: {x: 0.7071068, y: 0, z: 0, w: 0.7071068}
-  m_LocalPosition: {x: 16.89, y: 3.93, z: 15.2}
+  m_LocalPosition: {x: 15.17, y: 4.92, z: 14.61}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []

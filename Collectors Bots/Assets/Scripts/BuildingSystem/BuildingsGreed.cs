@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -6,17 +7,24 @@ public class BuildingsGreed : MonoBehaviour
     [SerializeField] private Vector2Int _gridSize = new Vector2Int(10, 10);
     [SerializeField] private Camera _mainCamera;
     [SerializeField] private List<Building> _buildingsOnLevel;
+    [SerializeField] private BuildingsPool _pool;
 
     private Building[,] _grid;
     private Building _flyingBuilding;
 
-    public bool Available;
+    private bool _available;
+
+    public event Action<Building> BuildingBuilded;
+
+    public bool Available => _available;
 
     private void Awake()
     {
+        _available = true;
+
         _grid = new Building[_gridSize.x, _gridSize.y];
 
-        foreach(Building building in _buildingsOnLevel)
+        foreach (Building building in _buildingsOnLevel)
         {
             Vector3 buildingWorldPosition = building.transform.position;
 
@@ -43,22 +51,12 @@ public class BuildingsGreed : MonoBehaviour
 
                 bool available = true;
 
-                if (x < 0 || x > _gridSize.x - _flyingBuilding.Size.x)
+                if ((x < 0 || x > _gridSize.x - _flyingBuilding.Size.x) || (y < 0 || y > _gridSize.y - _flyingBuilding.Size.y) || (available && CheckPlace(x, y)))
                 {
                     available = false;
                 }
 
-                if (y < 0 || y > _gridSize.y - _flyingBuilding.Size.y)
-                {
-                    available = false;
-                }
-
-                if(available && CheckPlace(x, y))
-                {
-                    available = false;
-                }
-
-                Available = available;
+                _available = available;
 
                 _flyingBuilding.transform.position = new Vector3(x, 0, y);
                 _flyingBuilding.SetTransparent(available);
@@ -75,10 +73,39 @@ public class BuildingsGreed : MonoBehaviour
     {
         if (_flyingBuilding != null)
         {
-            Destroy(_flyingBuilding.gameObject);
+            _pool.PutObject(_flyingBuilding.transform);
         }
 
-        _flyingBuilding = Instantiate(buildingPrefab);
+        var flyingBuildingTransform = _pool.GetObject(buildingPrefab.transform);
+        flyingBuildingTransform.gameObject.SetActive(true);
+        _flyingBuilding = flyingBuildingTransform.GetComponent<Building>();
+    }
+
+    public void AddBuilding(int placeX, int placeY, Building building)
+    {
+        for (int x = 0; x < building.Size.x; x++)
+        {
+            for (int y = 0; y < building.Size.y; y++)
+            {
+                _grid[placeX + x, placeY + y] = building;
+            }
+        }
+    }
+
+    public void DestroyBuilding(Building building)
+    {
+        for (int x = 0; x < _grid.GetLength(0); x++)
+        {
+            for (int y = 0; y < _grid.GetLength(1); y++)
+            {
+                if (building == _grid[x, y])
+                {
+                    _pool.PutObject(_grid[x, y].transform);
+                    _buildingsOnLevel.Remove(building);
+                    _grid[x, y] = null;
+                }
+            }
+        }
     }
 
     private bool CheckPlace(int placeX, int placeY)
@@ -89,7 +116,7 @@ public class BuildingsGreed : MonoBehaviour
         {
             for (int y = 0; y < _flyingBuilding.Size.y; y++)
             {
-                if(_grid[placeX + x, placeY + y] != null)
+                if (_grid[placeX + x, placeY + y] != null)
                 {
                     isPlaceTaken = true;
                     return isPlaceTaken;
@@ -107,17 +134,10 @@ public class BuildingsGreed : MonoBehaviour
 
         _flyingBuilding.SetNormal();
         _flyingBuilding.Build(_flyingBuilding.transform, _flyingBuilding);
-        _flyingBuilding = null;
-    }
+        _pool.PutObject(_flyingBuilding.transform);
 
-    private void AddBuilding(int placeX, int placeY, Building building)
-    {
-        for (int x = 0; x < building.Size.x; x++)
-        {
-            for (int y = 0; y < building.Size.y; y++)
-            {
-                _grid[placeX + x, placeY + y] = building;
-            }
-        }
+        BuildingBuilded.Invoke(_flyingBuilding);
+
+        _flyingBuilding = null;
     }
 }

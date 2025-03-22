@@ -14,10 +14,14 @@ public class Base : MonoBehaviour
     private List<Unit> _freeUnits = new List<Unit>();
     private int _newUnitPrice = 3;
     private int _baseResources;
+    private int _baseFlag = 0;
+    private Building _flag;
 
     public event Action ResourcesUpdated;
+
     public IReadOnlyList<Unit> AllUnits => _allUnits.AsReadOnly();
     public int BaseResources => _baseResources;
+    public int BaseFlag => _baseFlag;
 
     private void Awake()
     {
@@ -62,6 +66,23 @@ public class Base : MonoBehaviour
         {
             unit.TargetReached -= CheckUnitTarget;
         }
+    }
+
+    public void AddFlag(Building flag)
+    {
+        _flag = flag;
+        _baseFlag++;
+    }
+
+    public void DeleteFlag()
+    {
+        _flag = null;
+        _baseFlag--;
+    }
+
+    public Building GetFlag()
+    {
+        return _flag;
     }
 
     private void SendUnits()
