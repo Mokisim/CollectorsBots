@@ -6,9 +6,12 @@ public class TakePoint : MonoBehaviour
 {
     private Resource _resource;
     private Resource _unitResource;
-
+    private bool _unitIsGoingBuild;
+    private Transform _unitTarget;
+    
     public event Action<Transform> ResourceReturned;
     public event Action<Transform> TargetReached;
+    public event Action FlagReached;
 
     private void OnTriggerEnter(Collider collision)
     {
@@ -27,10 +30,24 @@ public class TakePoint : MonoBehaviour
                 _resource = null;
             }
         }
+        else if(collision.TryGetComponent(out Flag flag) == true && _unitIsGoingBuild == true && flag.transform == _unitTarget)
+        {
+            FlagReached?.Invoke();
+        }
     }
 
-    public void GetResource(Resource resource)
+    public void SetResource(Resource resource)
     {
         _unitResource = resource;
+    }
+
+    public void SetBuildInfo(bool isGoingBuild)
+    {
+        _unitIsGoingBuild = isGoingBuild;
+    }
+
+    public void SetUnitTarget(Transform target)
+    {
+        _unitTarget = target;
     }
 }

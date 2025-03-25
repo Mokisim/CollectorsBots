@@ -31,12 +31,6 @@ public class Building : MonoBehaviour
         _renderer.material.color = _normalColor;
     }
 
-    public void Build(Transform buildingTransform, Building prefab)
-    {
-        var building = Instantiate(prefab, Vector3.zero, transform.rotation);
-        building.transform.position = buildingTransform.position;
-    }
-
     private void OnDrawGizmos()
     {
         for (int x = 0; x < _size.x; x++)

@@ -11,7 +11,7 @@ public class BuildingsGreed : MonoBehaviour
 
     private Building[,] _grid;
     private Building _flyingBuilding;
-
+    
     private bool _available;
 
     public event Action<Building> BuildingBuilded;
@@ -69,14 +69,25 @@ public class BuildingsGreed : MonoBehaviour
         }
     }
 
+    private void OnDisable()
+    {
+        foreach(Building building in _buildingsOnLevel)
+        {
+            if(building.TryGetComponent(out Flag flag) == true)
+            {
+                
+            }
+        }
+    }
+
     public void StartPlacingBuilding(Building buildingPrefab)
     {
         if (_flyingBuilding != null)
         {
-            _pool.PutObject(_flyingBuilding.transform);
+            _pool.PutObject(_flyingBuilding);
         }
 
-        var flyingBuildingTransform = _pool.GetObject(buildingPrefab.transform);
+        var flyingBuildingTransform = _pool.GetObject(buildingPrefab);
         flyingBuildingTransform.gameObject.SetActive(true);
         _flyingBuilding = flyingBuildingTransform.GetComponent<Building>();
     }
@@ -100,9 +111,10 @@ public class BuildingsGreed : MonoBehaviour
             {
                 if (building == _grid[x, y])
                 {
-                    _pool.PutObject(_grid[x, y].transform);
-                    _buildingsOnLevel.Remove(building);
+                    Debug.Log(building);
                     _grid[x, y] = null;
+                    _buildingsOnLevel.Remove(building);
+                    _pool.PutObject(building);
                 }
             }
         }
@@ -129,15 +141,24 @@ public class BuildingsGreed : MonoBehaviour
 
     private void PlaceFlyingBuilding(int placeX, int placeY)
     {
-        AddBuilding(placeX, placeY, _flyingBuilding);
-        _buildingsOnLevel.Add(_flyingBuilding);
-
         _flyingBuilding.SetNormal();
-        _flyingBuilding.Build(_flyingBuilding.transform, _flyingBuilding);
-        _pool.PutObject(_flyingBuilding.transform);
 
-        BuildingBuilded.Invoke(_flyingBuilding);
+        var buildedBuilding = _pool.GetObject(_flyingBuilding);
+        buildedBuilding.gameObject.SetActive(true);
+        buildedBuilding.transform.position = _flyingBuilding.transform.position;
+
+        AddBuilding(placeX, placeY, buildedBuilding);
+
+        _pool.PutObject(_flyingBuilding);
+        _buildingsOnLevel.Add(buildedBuilding);
+
+        BuildingBuilded?.Invoke(buildedBuilding);
 
         _flyingBuilding = null;
+
+        if(buildedBuilding.TryGetComponent(out Flag flag) == true)
+        {
+
+        }
     }
 }

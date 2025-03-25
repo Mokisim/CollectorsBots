@@ -331,10 +331,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _pool: {fileID: 0}
   _scanner: {fileID: 7106178064472586581}
-  _allUnits:
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
+  _allUnits: []
   _storage: {fileID: 1615997806620013629}
   _unitCreator: {fileID: 4494306842822401027}
 --- !u!114 &4494306842822401027

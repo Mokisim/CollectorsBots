@@ -1,21 +1,20 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class BuildingsPool : MonoBehaviour
 {
     [SerializeField] private Transform _container;
-    
-    private Queue<Transform> _pool;
+
+    private Queue<Building> _pool;
 
     public IEnumerable<Component> PooledObjects => _pool;
 
     private void Awake()
     {
-        _pool = new Queue<Transform>();
+        _pool = new Queue<Building>();
     }
 
-    public Component GetObject(Transform prefab)
+    public Building GetObject(Building prefab)
     {
         if (_pool.Count == 0)
         {
@@ -28,9 +27,8 @@ public class BuildingsPool : MonoBehaviour
         return _pool.Dequeue();
     }
 
-    public void PutObject(Transform component)
+    public void PutObject(Building component)
     {
-        component.transform.parent = _container;
         _pool.Enqueue(component);
         component.gameObject.SetActive(false);
     }

@@ -13,6 +13,7 @@ public class Base : MonoBehaviour
 
     private List<Unit> _freeUnits = new List<Unit>();
     private int _newUnitPrice = 3;
+    private int _newBasePrice = 5;
     private int _baseResources;
     private int _baseFlag = 0;
     private Building _flag;
@@ -42,7 +43,18 @@ public class Base : MonoBehaviour
 
     private void Update()
     {
-        CheckPossibilityCreatingUnit();
+        if (_flag == null)
+        {
+            CheckPossibilityCreatingUnit();
+        }
+        else
+        {
+            if(_baseResources >= _newBasePrice)
+            {
+
+            }
+        }
+
     }
 
     private void OnEnable()
@@ -103,6 +115,16 @@ public class Base : MonoBehaviour
                 _storage.DeleteAssignedResource(_storage.AviableResources.First());
             }
         }
+    }
+
+    private void SendFreeUnitBuildNewBase()
+    {
+        Unit freeUnit = _freeUnits.First();
+
+        freeUnit.SetTarget(_flag.transform);
+        freeUnit.DeleteBaseTransform();
+        _freeUnits.Remove(freeUnit);
+        _allUnits.Remove(freeUnit);
     }
 
     private void CheckUnitTarget(Transform targetTransform, Unit unit)

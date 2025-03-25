@@ -1,4 +1,5 @@
 using System;
+using UnityEditor.Build;
 using UnityEngine;
 
 [RequireComponent(typeof(Rigidbody))]
@@ -11,6 +12,7 @@ public class Unit : MonoBehaviour
     private Transform _target;
     
     private bool _isResourceReached;
+    private bool _isGoingBuild;
 
     private Resource _resource;
 
@@ -19,6 +21,8 @@ public class Unit : MonoBehaviour
     public TakePoint TakePoint => _takePoint;
 
     public Resource Resource { get { return _resource; } private set { } }
+    
+    public Transform Target { get { return _target; } private set { } }
 
     private void Update()
     {
@@ -31,6 +35,7 @@ public class Unit : MonoBehaviour
     private void OnEnable()
     {
         _takePoint.TargetReached += SayTargetReached;
+        _takePoint.FlagReached += ClearTarget;
     }
 
     private void OnDisable()
@@ -38,26 +43,49 @@ public class Unit : MonoBehaviour
         _takePoint.TargetReached -= SayTargetReached;
     }
 
+    public void GoBuild()
+    {
+        _isGoingBuild = true;
+        _takePoint.SetBuildInfo(_isGoingBuild);
+    }
+
+    public void StopBuild()
+    {
+        _isGoingBuild = false;
+        _takePoint.SetBuildInfo(_isGoingBuild);
+    }
+
     public void ClearResource()
     {
         _resource = null;
-        _takePoint.GetResource(null);
+        _takePoint.SetResource(null);
     }
 
     public void SetResource(Resource resource)
     {
         _resource = resource;
-        _takePoint.GetResource(resource);
+        _takePoint.SetResource(resource);
     }
 
     public void SetTarget(Transform target)
     {
         _target = target;
+        _takePoint.SetUnitTarget(target);
+    }
+
+    public void ClearTarget()
+    {
+        _target = null;
     }
 
     public void SetBaseTransform(Transform transform)
     {
         _baseTransform = transform;
+    }
+
+    public void DeleteBaseTransform()
+    {
+        _baseTransform = null;
     }
 
     private void GoTarget()

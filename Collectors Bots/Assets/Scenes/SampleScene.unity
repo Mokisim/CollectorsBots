@@ -1376,6 +1376,10 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 187723819}
     - target: {fileID: 826505796737637940, guid: ca9175d56208c8843ab93122051e5372, type: 3}
+      propertyPath: _buildingsPool
+      value: 
+      objectReference: {fileID: 739300017}
+    - target: {fileID: 826505796737637940, guid: ca9175d56208c8843ab93122051e5372, type: 3}
       propertyPath: _allUnits.Array.data[0]
       value: 
       objectReference: {fileID: 896046736}
