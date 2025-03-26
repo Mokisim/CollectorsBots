@@ -4,6 +4,7 @@ public class Building : MonoBehaviour
 {
     [SerializeField] private Vector2Int _size = Vector2Int.one;
     [SerializeField] private Renderer _renderer;
+    [SerializeField] private Base _mainBase;
 
     private Color _normalColor;
     
@@ -29,6 +30,14 @@ public class Building : MonoBehaviour
     public void SetNormal()
     {
         _renderer.material.color = _normalColor;
+    }
+
+    public void AddNewBaseUnit(Unit unit)
+    {
+        if(_mainBase != null)
+        {
+            _mainBase.AddUnit(unit);
+        }
     }
 
     private void OnDrawGizmos()

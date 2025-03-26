@@ -30,11 +30,11 @@ public class MouseObjectDetection : MonoBehaviour
 
     private void OnMouseDown()
     {
-        if (_base.BaseFlag == _minBaseFlags)
+        if (_base.BaseFlag == _minBaseFlags && _base.AllUnits.Count > _base.MinUnitsCount)
         {
             _greed.StartPlacingBuilding(_prefab);
         }
-        else if(_base.BaseFlag == _maxBaseFlags)
+        else if (_base.BaseFlag == _maxBaseFlags && _base.AllUnits.Count > _base.MinUnitsCount)
         {
             _greed.DestroyBuilding(_base.GetFlag());
             _base.DeleteFlag();

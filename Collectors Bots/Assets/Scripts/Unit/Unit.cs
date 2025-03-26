@@ -11,9 +11,6 @@ public class Unit : MonoBehaviour
 
     private Transform _target;
     
-    private bool _isResourceReached;
-    private bool _isGoingBuild;
-
     private Resource _resource;
 
     public event Action<Transform, Unit> TargetReached;
@@ -23,6 +20,14 @@ public class Unit : MonoBehaviour
     public Resource Resource { get { return _resource; } private set { } }
     
     public Transform Target { get { return _target; } private set { } }
+
+    private void Start()
+    {
+        if(_baseTransform != null)
+        {
+            _takePoint.SetUnitBase(_baseTransform);
+        }
+    }
 
     private void Update()
     {
@@ -35,24 +40,11 @@ public class Unit : MonoBehaviour
     private void OnEnable()
     {
         _takePoint.TargetReached += SayTargetReached;
-        _takePoint.FlagReached += ClearTarget;
     }
 
     private void OnDisable()
     {
         _takePoint.TargetReached -= SayTargetReached;
-    }
-
-    public void GoBuild()
-    {
-        _isGoingBuild = true;
-        _takePoint.SetBuildInfo(_isGoingBuild);
-    }
-
-    public void StopBuild()
-    {
-        _isGoingBuild = false;
-        _takePoint.SetBuildInfo(_isGoingBuild);
     }
 
     public void ClearResource()
@@ -70,7 +62,6 @@ public class Unit : MonoBehaviour
     public void SetTarget(Transform target)
     {
         _target = target;
-        _takePoint.SetUnitTarget(target);
     }
 
     public void ClearTarget()
@@ -81,6 +72,7 @@ public class Unit : MonoBehaviour
     public void SetBaseTransform(Transform transform)
     {
         _baseTransform = transform;
+        _takePoint.SetUnitBase(_baseTransform);
     }
 
     public void DeleteBaseTransform()

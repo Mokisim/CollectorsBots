@@ -376,7 +376,7 @@ PrefabInstance:
     - target: {fileID: 475170066797552110, guid: 3f60721b4d05e084fbf25860738e4ca4, type: 3}
       propertyPath: _baseTransform
       value: 
-      objectReference: {fileID: 0}
+      objectReference: {fileID: 873090454}
     - target: {fileID: 2528717129466931677, guid: 3f60721b4d05e084fbf25860738e4ca4, type: 3}
       propertyPath: _pool
       value: 
@@ -793,6 +793,11 @@ Transform:
   m_Children: []
   m_Father: {fileID: 383118341}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!4 &873090454 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 2888902508299856382, guid: ca9175d56208c8843ab93122051e5372, type: 3}
+  m_PrefabInstance: {fileID: 623839498499718414}
+  m_PrefabAsset: {fileID: 0}
 --- !u!114 &896046736 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 475170066797552110, guid: 3f60721b4d05e084fbf25860738e4ca4, type: 3}
@@ -868,7 +873,7 @@ PrefabInstance:
     - target: {fileID: 475170066797552110, guid: 3f60721b4d05e084fbf25860738e4ca4, type: 3}
       propertyPath: _baseTransform
       value: 
-      objectReference: {fileID: 0}
+      objectReference: {fileID: 873090454}
     - target: {fileID: 2528717129466931677, guid: 3f60721b4d05e084fbf25860738e4ca4, type: 3}
       propertyPath: _pool
       value: 
@@ -1380,6 +1385,10 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 739300017}
     - target: {fileID: 826505796737637940, guid: ca9175d56208c8843ab93122051e5372, type: 3}
+      propertyPath: _allUnits.Array.size
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 826505796737637940, guid: ca9175d56208c8843ab93122051e5372, type: 3}
       propertyPath: _allUnits.Array.data[0]
       value: 
       objectReference: {fileID: 896046736}
@@ -1391,6 +1400,10 @@ PrefabInstance:
       propertyPath: _allUnits.Array.data[2]
       value: 
       objectReference: {fileID: 192723989}
+    - target: {fileID: 2380076621702835257, guid: ca9175d56208c8843ab93122051e5372, type: 3}
+      propertyPath: _greed
+      value: 
+      objectReference: {fileID: 739300016}
     - target: {fileID: 2380076621702835257, guid: ca9175d56208c8843ab93122051e5372, type: 3}
       propertyPath: _prefab
       value: 
@@ -1452,6 +1465,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 475170066797552110, guid: 3f60721b4d05e084fbf25860738e4ca4, type: 3}
+      propertyPath: _baseTransform
+      value: 
+      objectReference: {fileID: 873090454}
     - target: {fileID: 5041670845281702512, guid: 3f60721b4d05e084fbf25860738e4ca4, type: 3}
       propertyPath: m_Name
       value: Unit

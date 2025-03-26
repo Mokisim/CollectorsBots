@@ -16,6 +16,7 @@ public class Base : MonoBehaviour
     private int _newBasePrice = 5;
     private int _baseResources;
     private int _baseFlag = 0;
+    private int _minUnitsCount = 1;
     private Building _flag;
 
     public event Action ResourcesUpdated;
@@ -23,6 +24,7 @@ public class Base : MonoBehaviour
     public IReadOnlyList<Unit> AllUnits => _allUnits.AsReadOnly();
     public int BaseResources => _baseResources;
     public int BaseFlag => _baseFlag;
+    public int MinUnitsCount => _minUnitsCount;
 
     private void Awake()
     {
@@ -47,14 +49,6 @@ public class Base : MonoBehaviour
         {
             CheckPossibilityCreatingUnit();
         }
-        else
-        {
-            if(_baseResources >= _newBasePrice)
-            {
-
-            }
-        }
-
     }
 
     private void OnEnable()
@@ -62,6 +56,11 @@ public class Base : MonoBehaviour
         _scanner.ResourcesFound += _storage.SetResources;
         _storage.ResourcesSorted += SendUnits;
         _unitCreator.UnitCreated += AddUnit;
+
+        if (_flag != null)
+        {
+            
+        }
 
         foreach (Unit unit in _allUnits)
         {
@@ -73,6 +72,11 @@ public class Base : MonoBehaviour
     {
         _scanner.ResourcesFound -= _storage.SetResources;
         _storage.ResourcesSorted -= SendUnits;
+
+        if (_flag != null)
+        {
+            
+        }
 
         foreach (Unit unit in _allUnits)
         {
@@ -97,6 +101,38 @@ public class Base : MonoBehaviour
         return _flag;
     }
 
+    public void AddUnit(Unit unit)
+    {
+        int recurringUnits = 0;
+
+        if (_allUnits.Count > 0)
+        {
+            foreach (Unit checkingUnit in _allUnits)
+            {
+                if (checkingUnit == unit)
+                {
+                    recurringUnits++;
+                }
+            }
+        }
+
+        if (recurringUnits == 0)
+        {
+            unit.SetBaseTransform(this.transform);
+            unit.ClearResource();
+            unit.TargetReached += CheckUnitTarget;
+            _allUnits.Add(unit);
+            _freeUnits.Add(unit);
+            _pool.AddUnit(unit);
+            _storage.SetUnits(_allUnits);
+        }
+        else
+        {
+            _freeUnits.Add(unit);
+            unit.ClearResource();
+        }
+    }
+
     private void SendUnits()
     {
         while (_freeUnits.Count > 0 && _storage.AviableResources.Count > 0)
@@ -119,12 +155,18 @@ public class Base : MonoBehaviour
 
     private void SendFreeUnitBuildNewBase()
     {
-        Unit freeUnit = _freeUnits.First();
+        if (_allUnits.Count > _minUnitsCount)
+        {
+            Unit freeUnit = _freeUnits.First();
 
-        freeUnit.SetTarget(_flag.transform);
-        freeUnit.DeleteBaseTransform();
-        _freeUnits.Remove(freeUnit);
-        _allUnits.Remove(freeUnit);
+            freeUnit.SetTarget(_flag.transform);
+            freeUnit.DeleteBaseTransform();
+            _freeUnits.Remove(freeUnit);
+            _allUnits.Remove(freeUnit);
+
+            _baseResources -= _newBasePrice;
+            ResourcesUpdated.Invoke();
+        }
     }
 
     private void CheckUnitTarget(Transform targetTransform, Unit unit)
@@ -141,39 +183,15 @@ public class Base : MonoBehaviour
         }
     }
 
-    private void AddUnit(Unit unit)
-    {
-        int recurringUnits = 0;
-
-        foreach (Unit checkingUnit in _allUnits)
-        {
-            if (checkingUnit == unit)
-            {
-                recurringUnits++;
-            }
-        }
-
-        if (recurringUnits == 0)
-        {
-            unit.SetBaseTransform(this.transform);
-            unit.ClearResource();
-            unit.TargetReached += CheckUnitTarget;
-            _allUnits.Add(unit);
-            _freeUnits.Add(unit);
-            _pool.AddUnit(unit);
-            _storage.SetUnits(_allUnits);
-        }
-        else
-        {
-            _freeUnits.Add(unit);
-            unit.ClearResource();
-        }
-    }
-
     private void AddResource()
     {
         _baseResources++;
         ResourcesUpdated.Invoke();
+
+        if (_baseResources >= _newBasePrice && _flag != null)
+        {
+            SendFreeUnitBuildNewBase();
+        }
     }
 
     private void CheckPossibilityCreatingUnit()

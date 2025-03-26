@@ -1,6 +1,4 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class Flag : MonoBehaviour
@@ -8,15 +6,20 @@ public class Flag : MonoBehaviour
     [SerializeField] private Building _basePrefab;
     [SerializeField] private Building _mainBuilding;
 
-    public event Action<Building> BaseBuilded;
+    public event Action<Building, Building> BaseBuilded;
+    public event Action FlagDestroyed;
 
-    private void OnTriggerEnter(Collider other)
+    private void OnCollisionEnter(Collision collision)
     {
-        if(other.TryGetComponent(out Unit unit) && unit.Target == transform)
+        if (collision.transform.TryGetComponent(out Unit unit) && unit.Target == transform)
         {
+            unit.ClearTarget();
             var newBase = Instantiate(_basePrefab, Vector3.zero, transform.rotation);
             newBase.transform.position = transform.position;
-            BaseBuilded?.Invoke(_mainBuilding);
+            newBase.AddNewBaseUnit(unit);
+
+            FlagDestroyed?.Invoke();
+            BaseBuilded?.Invoke(_mainBuilding, newBase);
         }
     }
 }

@@ -73,9 +73,9 @@ public class BuildingsGreed : MonoBehaviour
     {
         foreach(Building building in _buildingsOnLevel)
         {
-            if(building.TryGetComponent(out Flag flag) == true)
+            if(building != null && building.TryGetComponent(out Flag flag) == true)
             {
-                
+                flag.BaseBuilded -= SwapBuildings;
             }
         }
     }
@@ -111,7 +111,6 @@ public class BuildingsGreed : MonoBehaviour
             {
                 if (building == _grid[x, y])
                 {
-                    Debug.Log(building);
                     _grid[x, y] = null;
                     _buildingsOnLevel.Remove(building);
                     _pool.PutObject(building);
@@ -158,7 +157,18 @@ public class BuildingsGreed : MonoBehaviour
 
         if(buildedBuilding.TryGetComponent(out Flag flag) == true)
         {
-
+            flag.BaseBuilded += SwapBuildings;
         }
+    }
+
+    private void SwapBuildings(Building originalBuilding, Building newBuilding)
+    {
+        DestroyBuilding(originalBuilding);
+
+        int newBuildingWorldPositionX = Mathf.RoundToInt(newBuilding.transform.position.x);
+        int newBuildingWorldPositionY = Mathf.RoundToInt(newBuilding.transform.position.z);
+
+        AddBuilding(newBuildingWorldPositionX, newBuildingWorldPositionY, newBuilding);
+        _buildingsOnLevel.Add(newBuilding);
     }
 }

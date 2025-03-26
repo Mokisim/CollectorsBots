@@ -215,6 +215,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8d8131c626b7f59499f822a0ee7469fa, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _speed: 5
+  _speed: 6
   _takePoint: {fileID: 2528717129466931677}
   _baseTransform: {fileID: 0}
