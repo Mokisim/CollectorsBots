@@ -407,7 +407,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _extents: {x: 1012.4, y: 429.3, z: 995.7}
-  _scanDelay: 2
+  _scanDelay: 1
 --- !u!1 &8938953109762745726
 GameObject:
   m_ObjectHideFlags: 0

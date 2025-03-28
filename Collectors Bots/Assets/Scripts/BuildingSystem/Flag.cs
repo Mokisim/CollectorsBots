@@ -8,7 +8,7 @@ public class Flag : MonoBehaviour
 
     public event Action<Building, Building> BaseBuilded;
     public event Action FlagDestroyed;
-
+    
     private void OnCollisionEnter(Collision collision)
     {
         if (collision.transform.TryGetComponent(out Unit unit) && unit.Target == transform)
@@ -18,7 +18,7 @@ public class Flag : MonoBehaviour
             newBase.transform.position = transform.position;
             newBase.AddNewBaseUnit(unit);
 
-            FlagDestroyed?.Invoke();
+            FlagDestroyed.Invoke();
             BaseBuilded?.Invoke(_mainBuilding, newBase);
         }
     }

@@ -18,6 +18,7 @@ public class Base : MonoBehaviour
     private int _baseFlag = 0;
     private int _minUnitsCount = 1;
     private Building _flag;
+    private Flag _mainFlag;
 
     public event Action ResourcesUpdated;
 
@@ -57,11 +58,6 @@ public class Base : MonoBehaviour
         _storage.ResourcesSorted += SendUnits;
         _unitCreator.UnitCreated += AddUnit;
 
-        if (_flag != null)
-        {
-            
-        }
-
         foreach (Unit unit in _allUnits)
         {
             unit.TargetReached += CheckUnitTarget;
@@ -73,9 +69,9 @@ public class Base : MonoBehaviour
         _scanner.ResourcesFound -= _storage.SetResources;
         _storage.ResourcesSorted -= SendUnits;
 
-        if (_flag != null)
+        if (_mainFlag != null)
         {
-            
+            _mainFlag.FlagDestroyed -= DeleteFlag;
         }
 
         foreach (Unit unit in _allUnits)
@@ -88,11 +84,18 @@ public class Base : MonoBehaviour
     {
         _flag = flag;
         _baseFlag++;
+
+        if(_flag.TryGetComponent(out Flag mainFlag) == true)
+        {
+            _mainFlag = mainFlag;
+            _mainFlag.FlagDestroyed += DeleteFlag;
+        }
     }
 
     public void DeleteFlag()
     {
         _flag = null;
+        _mainFlag = null;
         _baseFlag--;
     }
 
