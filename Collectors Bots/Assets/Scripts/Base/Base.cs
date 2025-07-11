@@ -6,9 +6,8 @@ using UnityEngine;
 public class Base : MonoBehaviour
 {
     [SerializeField] private ObjectPool _pool;
-    [SerializeField] private ResourceScanner _scanner;
+    [SerializeField] private ResourceWatcher _watcher;
     [SerializeField] private List<Unit> _allUnits = new List<Unit>();
-    [SerializeField] private ResourceStorage _storage;
     [SerializeField] private UnitCreator _unitCreator;
 
     private List<Unit> _freeUnits = new List<Unit>();
@@ -36,8 +35,6 @@ public class Base : MonoBehaviour
             _freeUnits.Add(unit);
         }
 
-        _storage.SetUnits(_allUnits);
-
         if (_pool == null)
         {
             _pool = FindObjectOfType<ObjectPool>();
@@ -54,8 +51,7 @@ public class Base : MonoBehaviour
 
     private void OnEnable()
     {
-        _scanner.ResourcesFound += _storage.SetResources;
-        _storage.ResourcesSorted += SendUnits;
+        _watcher.NewResourcesFounded += SendUnits;
         _unitCreator.UnitCreated += AddUnit;
 
         foreach (Unit unit in _allUnits)
@@ -66,8 +62,8 @@ public class Base : MonoBehaviour
 
     private void OnDisable()
     {
-        _scanner.ResourcesFound -= _storage.SetResources;
-        _storage.ResourcesSorted -= SendUnits;
+        _watcher.NewResourcesFounded -= SendUnits;
+        _unitCreator.UnitCreated -= AddUnit;
 
         if (_mainFlag != null)
         {
@@ -85,7 +81,7 @@ public class Base : MonoBehaviour
         _flag = flag;
         _baseFlag++;
 
-        if(_flag.TryGetComponent(out Flag mainFlag) == true)
+        if (_flag.TryGetComponent(out Flag mainFlag) == true)
         {
             _mainFlag = mainFlag;
             _mainFlag.FlagDestroyed += DeleteFlag;
@@ -138,11 +134,11 @@ public class Base : MonoBehaviour
 
     private void SendUnits()
     {
-        while (_freeUnits.Count > 0 && _storage.AviableResources.Count > 0)
+        while (_freeUnits.Count > 0 && _watcher.ResourcesCount > 0)
         {
             Unit firstUnit = _freeUnits.First();
 
-            if (_storage.AviableResources.First().gameObject.activeSelf == true)
+            if (_watcher.CheckResource().gameObject.activeSelf == true)
             {
                 firstUnit.SetResource(_storage.AviableResources.First());
                 firstUnit.SetTarget(_storage.AviableResources.First().transform);
@@ -151,7 +147,7 @@ public class Base : MonoBehaviour
             }
             else
             {
-                _storage.DeleteAssignedResource(_storage.AviableResources.First());
+                _watcher.GetAviableResource();
             }
         }
     }

@@ -741,10 +741,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 739300010}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3f93c16dd00728e4abf73801a882ca4b, type: 3}
+  m_Script: {fileID: 11500000, guid: 5804921c617dbd542bd26049a3df2f52, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _resourcesOnLevel: []
 --- !u!1 &743725106
 GameObject:
   m_ObjectHideFlags: 0
@@ -1470,6 +1469,10 @@ PrefabInstance:
       propertyPath: _scanDelay
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 7492015151698328946, guid: ca9175d56208c8843ab93122051e5372, type: 3}
+      propertyPath: _resourceWatcher
+      value: 
+      objectReference: {fileID: 739300018}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
