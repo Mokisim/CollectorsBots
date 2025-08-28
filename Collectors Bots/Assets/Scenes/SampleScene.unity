@@ -608,6 +608,7 @@ GameObject:
   - component: {fileID: 739300016}
   - component: {fileID: 739300017}
   - component: {fileID: 739300018}
+  - component: {fileID: 739300019}
   m_Layer: 0
   m_Name: Plane
   m_TagString: Untagged
@@ -744,6 +745,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5804921c617dbd542bd26049a3df2f52, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _scanner: {fileID: 739300019}
+--- !u!114 &739300019
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 739300010}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dde4743437c1af442b4c191c0a6e3510, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _extents: {x: 38.8, y: 11.17, z: 36.3}
+  _scanDelay: 5
 --- !u!1 &743725106
 GameObject:
   m_ObjectHideFlags: 0
@@ -1393,6 +1409,10 @@ PrefabInstance:
       propertyPath: _pool
       value: 
       objectReference: {fileID: 187723819}
+    - target: {fileID: 826505796737637940, guid: ca9175d56208c8843ab93122051e5372, type: 3}
+      propertyPath: _watcher
+      value: 
+      objectReference: {fileID: 739300018}
     - target: {fileID: 826505796737637940, guid: ca9175d56208c8843ab93122051e5372, type: 3}
       propertyPath: _buildingsPool
       value: 

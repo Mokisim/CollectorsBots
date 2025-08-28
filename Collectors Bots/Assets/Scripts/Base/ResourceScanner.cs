@@ -8,7 +8,7 @@ public class ResourceScanner : MonoBehaviour
     [SerializeField] private Vector3 _extents;
     [SerializeField] private float _scanDelay = 5f;
 
-    public event Action<Queue<Resource>> ResourcesFound;
+    public event Action<List<Resource>> ResourcesFound;
 
     private bool _isActive;
     private WaitForSeconds _scanCooldown;
@@ -44,18 +44,19 @@ public class ResourceScanner : MonoBehaviour
     {
         Collider[] hitColliders = Physics.OverlapBox(transform.position, _extents / _extentsScaler, Quaternion.identity);
 
-        Queue<Resource> resources = new Queue<Resource>();
+        List<Resource> resources = new List<Resource>();
 
         foreach (Collider collider in hitColliders)
         {
             if (collider.TryGetComponent(out Resource resource) && collider.gameObject.activeSelf == true)
             {
-                resources.Enqueue(resource);
+                resources.Add(resource);
             }
         }
 
         ResourcesFound.Invoke(resources);
         resources.Clear();
+        Debug.Log("ресурсы найдены");
     }
 
     private IEnumerator PeriodicScan()

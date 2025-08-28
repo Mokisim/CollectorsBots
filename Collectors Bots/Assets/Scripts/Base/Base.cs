@@ -123,7 +123,6 @@ public class Base : MonoBehaviour
             _allUnits.Add(unit);
             _freeUnits.Add(unit);
             _pool.AddUnit(unit);
-            _storage.SetUnits(_allUnits);
         }
         else
         {
@@ -138,16 +137,14 @@ public class Base : MonoBehaviour
         {
             Unit firstUnit = _freeUnits.First();
 
-            if (_watcher.CheckResource().gameObject.activeSelf == true)
+            Resource unitResource = _watcher.GetAviableResource();
+
+            if (unitResource != null)
             {
-                firstUnit.SetResource(_storage.AviableResources.First());
-                firstUnit.SetTarget(_storage.AviableResources.First().transform);
+                firstUnit.SetResource(unitResource);
+                firstUnit.SetTarget(unitResource.transform);
                 _freeUnits.Remove(firstUnit);
-                _storage.DeleteAssignedResource(_storage.AviableResources.First());
-            }
-            else
-            {
-                _watcher.GetAviableResource();
+                unitResource = null;
             }
         }
     }
