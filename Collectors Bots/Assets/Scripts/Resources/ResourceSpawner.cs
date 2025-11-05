@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -6,12 +7,14 @@ public class ResourceSpawner : MonoBehaviour
 {
     [SerializeField] private ObjectPool _pool;
     [SerializeField] private float _spawnRate = 120;
-    [SerializeField]private List<Transform> _spawnPoints = new List<Transform>();
-    [SerializeField]private int _spawnCount = 6;
+    [SerializeField] private List<Transform> _spawnPoints = new List<Transform>();
+    [SerializeField] private int _spawnCount = 6;
 
     private WaitForSeconds _cooldown;
 
     private bool _isActive = true;
+
+    public event Action Spawned;
 
     private void Awake()
     {
@@ -32,6 +35,7 @@ public class ResourceSpawner : MonoBehaviour
     {
         while (_isActive == true)
         {
+            Spawned?.Invoke();
             Spawn();
 
             yield return _cooldown;
@@ -43,13 +47,13 @@ public class ResourceSpawner : MonoBehaviour
         List<int> randomSpawnpoints = new List<int>();
         int randomNumber;
 
-        for(int i = 0; i < _spawnCount; i++)
+        for (int i = 0; i < _spawnCount; i++)
         {
             do
             {
-                randomNumber = Random.Range(0, _spawnPoints.Count);
+                randomNumber = UnityEngine.Random.Range(0, _spawnPoints.Count);
             }
-            while(randomSpawnpoints.Contains(randomNumber));
+            while (randomSpawnpoints.Contains(randomNumber));
 
             randomSpawnpoints.Add(randomNumber);
         }

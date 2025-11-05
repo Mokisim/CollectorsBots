@@ -8,7 +8,7 @@ public class ObjectPool : MonoBehaviour
     [SerializeField] private List<Unit> _allUnits;
 
     private Queue<Transform> _pool;
-    
+
     public IEnumerable<Component> PooledObjects => _pool;
 
     private void Awake()
@@ -18,7 +18,7 @@ public class ObjectPool : MonoBehaviour
 
     private void OnEnable()
     {
-        foreach(Unit unit in _allUnits)
+        foreach (Unit unit in _allUnits)
         {
             unit.TakePoint.ResourceReturned += PutObject;
         }

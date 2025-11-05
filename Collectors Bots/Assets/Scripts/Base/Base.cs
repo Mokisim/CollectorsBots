@@ -28,6 +28,11 @@ public class Base : MonoBehaviour
 
     private void Awake()
     {
+        if (_watcher == null)
+        {
+            _watcher = FindObjectOfType<ResourceWatcher>();
+        }
+
         _baseResources = 0;
 
         foreach (Unit unit in _allUnits)

@@ -56,7 +56,6 @@ public class ResourceScanner : MonoBehaviour
 
         ResourcesFound.Invoke(resources);
         resources.Clear();
-        Debug.Log("ресурсы найдены");
     }
 
     private IEnumerator PeriodicScan()

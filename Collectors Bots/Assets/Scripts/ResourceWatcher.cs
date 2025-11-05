@@ -7,6 +7,7 @@ using UnityEngine;
 public class ResourceWatcher : MonoBehaviour
 {
     [SerializeField] private ResourceScanner _scanner;
+    [SerializeField] private ResourceSpawner _spawner;
 
     public event Action NewResourcesFounded;
 
@@ -20,29 +21,32 @@ public class ResourceWatcher : MonoBehaviour
 
     private void Awake()
     {
-
+        _spawner = FindObjectOfType<ResourceSpawner>();
     }
 
     private void OnEnable()
     {
         _scanner.ResourcesFound += UpdateResourcesList;
+        _spawner.Spawned += UpdateGivedResources;
     }
 
     private void OnDisable()
     {
-        _scanner.ResourcesFound += UpdateResourcesList;
+        _scanner.ResourcesFound -= UpdateResourcesList;
+        _spawner.Spawned -= UpdateGivedResources;
     }
 
     public Resource GetAviableResource()
     {
-        Resource givedResource = _aviableResources.First();
+        UpdateGivedResources();
+        UpdateResourcesCount();
 
         if (_resourcesCount > 0)
         {
+            Resource givedResource = _aviableResources.First();
             _givedResources.Add(givedResource);
             _aviableResources.Remove(givedResource);
             return givedResource;
-
         }
         else
         {
@@ -58,11 +62,17 @@ public class ResourceWatcher : MonoBehaviour
     private void RemoveDuplicateResources()
     {
         List<Resource> aviableResources = new List<Resource>();
-        aviableResources = _resourcesOnlevel;
+        List<Resource> aviableResources1 = new List<Resource>();
+
+        foreach (Resource resource in _resourcesOnlevel)
+        {
+            aviableResources.Add(resource);
+            aviableResources1.Add(resource);
+        }
 
         if (aviableResources.Count > 0 && _givedResources.Count > 0)
         {
-            foreach (Resource resource in aviableResources)
+            foreach (Resource resource in aviableResources1)
             {
                 foreach (Resource resource1 in _givedResources)
                 {
@@ -74,13 +84,21 @@ public class ResourceWatcher : MonoBehaviour
             }
         }
 
-        _aviableResources = aviableResources;
+        _aviableResources.Clear();
+
+        foreach (Resource resource in aviableResources)
+        {
+            _aviableResources.Add(resource);
+        }
+
         aviableResources.Clear();
     }
 
     private void UpdateResourcesList(List<Resource> resources)
     {
         _resourcesOnlevel = resources;
+
+        UpdateGivedResources();
         RemoveDuplicateResources();
         UpdateResourcesCount();
         NewResourcesFounded.Invoke();
@@ -88,6 +106,25 @@ public class ResourceWatcher : MonoBehaviour
 
     private void UpdateResourcesCount()
     {
-        _resourcesCount = _resourcesOnlevel.Count;
+        _resourcesCount = _aviableResources.Count;
+    }
+
+    private void UpdateGivedResources()
+    {
+        List<Resource> _givedResources1 = new List<Resource>();
+
+        foreach (Resource resource in _givedResources)
+        {
+            if (resource.Active)
+            {
+                _givedResources1.Add(resource);
+            }
+        }
+        _givedResources.Clear();
+
+        foreach (Resource resource in _givedResources1)
+        {
+            _givedResources.Add(resource);
+        }
     }
 }

@@ -245,7 +245,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _pool: {fileID: 187723819}
-  _spawnRate: 20
+  _spawnRate: 10
   _spawnPoints:
   - {fileID: 1592132468}
   - {fileID: 1274960370}
@@ -746,6 +746,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _scanner: {fileID: 739300019}
+  _spawner: {fileID: 0}
 --- !u!114 &739300019
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1513,6 +1514,10 @@ PrefabInstance:
     - target: {fileID: 5041670845281702512, guid: 3f60721b4d05e084fbf25860738e4ca4, type: 3}
       propertyPath: m_Name
       value: Unit
+      objectReference: {fileID: 0}
+    - target: {fileID: 5041670845281702512, guid: 3f60721b4d05e084fbf25860738e4ca4, type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 5606424126864411685, guid: 3f60721b4d05e084fbf25860738e4ca4, type: 3}
       propertyPath: m_LocalPosition.x
