@@ -51,7 +51,7 @@ public class BuildingsGreed : MonoBehaviour
 
                 bool available = true;
 
-                if ((x < 0 || x > _gridSize.x - _flyingBuilding.Size.x) || (y < 0 || y > _gridSize.y - _flyingBuilding.Size.y) || (available && CheckPlace(x, y)))
+                if ((x < 0 || x > _gridSize.x - _flyingBuilding.Size.x) || (y < 0 || y > _gridSize.y - _flyingBuilding.Size.y) || (available && IsPlaceAlreadyOccupied(x, y)))
                 {
                     available = false;
                 }
@@ -119,7 +119,7 @@ public class BuildingsGreed : MonoBehaviour
         }
     }
 
-    private bool CheckPlace(int placeX, int placeY)
+    private bool IsPlaceAlreadyOccupied(int placeX, int placeY)
     {
         bool isPlaceTaken;
 

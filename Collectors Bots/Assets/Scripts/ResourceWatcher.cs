@@ -19,11 +19,6 @@ public class ResourceWatcher : MonoBehaviour
 
     public int ResourcesCount { get { return _resourcesCount; } private set { } }
 
-    private void Awake()
-    {
-        _spawner = FindObjectOfType<ResourceSpawner>();
-    }
-
     private void OnEnable()
     {
         _scanner.ResourcesFound += UpdateResourcesList;
@@ -54,7 +49,7 @@ public class ResourceWatcher : MonoBehaviour
         }
     }
 
-    public int CheckResource()
+    public int GetAviableResourcesCount()
     {
         return _aviableResources.Count();
     }
@@ -115,11 +110,12 @@ public class ResourceWatcher : MonoBehaviour
 
         foreach (Resource resource in _givedResources)
         {
-            if (resource.Active)
+            if (resource.gameObject?.activeSelf == true)
             {
                 _givedResources1.Add(resource);
             }
         }
+
         _givedResources.Clear();
 
         foreach (Resource resource in _givedResources1)

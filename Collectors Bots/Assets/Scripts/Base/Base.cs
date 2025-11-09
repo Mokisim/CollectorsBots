@@ -50,7 +50,7 @@ public class Base : MonoBehaviour
     {
         if (_flag == null)
         {
-            CheckPossibilityCreatingUnit();
+            AttemptUnitCreation();
         }
     }
 
@@ -61,7 +61,7 @@ public class Base : MonoBehaviour
 
         foreach (Unit unit in _allUnits)
         {
-            unit.TargetReached += CheckUnitTarget;
+            unit.TargetReached += ValidateUnitTarget;
         }
     }
 
@@ -77,7 +77,7 @@ public class Base : MonoBehaviour
 
         foreach (Unit unit in _allUnits)
         {
-            unit.TargetReached -= CheckUnitTarget;
+            unit.TargetReached -= ValidateUnitTarget;
         }
     }
 
@@ -124,7 +124,7 @@ public class Base : MonoBehaviour
         {
             unit.SetBaseTransform(this.transform);
             unit.ClearResource();
-            unit.TargetReached += CheckUnitTarget;
+            unit.TargetReached += ValidateUnitTarget;
             _allUnits.Add(unit);
             _freeUnits.Add(unit);
             _pool.AddUnit(unit);
@@ -170,7 +170,7 @@ public class Base : MonoBehaviour
         }
     }
 
-    private void CheckUnitTarget(Transform targetTransform, Unit unit)
+    private void ValidateUnitTarget(Transform targetTransform, Unit unit)
     {
         if (targetTransform == transform)
         {
@@ -195,7 +195,7 @@ public class Base : MonoBehaviour
         }
     }
 
-    private void CheckPossibilityCreatingUnit()
+    private void AttemptUnitCreation()
     {
         if (_baseResources >= _newUnitPrice)
         {
