@@ -1,18 +1,33 @@
+using System;
 using UnityEngine;
 
 public class Building : MonoBehaviour
 {
     [SerializeField] private Vector2Int _size = Vector2Int.one;
     [SerializeField] private Renderer _renderer;
-    [SerializeField] private Base _mainBase;
+    [SerializeField] private bool _isFlag = false;
 
     private Color _normalColor;
-    
+
+    public event Action<Building, Unit> UnitArrived;
+
     public Vector2Int Size => _size;
+    public bool IsFlag => _isFlag;
 
     private void Awake()
     {
         _normalColor = _renderer.material.color;
+    }
+
+    private void OnCollisionEnter(Collision collision)
+    {
+        if (_isFlag == true)
+        {
+            if (collision.transform.TryGetComponent(out Unit unit) && unit.Target == transform)
+            {
+                UnitArrived?.Invoke(this, unit);
+            }
+        }
     }
 
     public void SetTransparent(bool available)
@@ -30,14 +45,6 @@ public class Building : MonoBehaviour
     public void SetNormal()
     {
         _renderer.material.color = _normalColor;
-    }
-
-    public void AddNewBaseUnit(Unit unit)
-    {
-        if(_mainBase != null)
-        {
-            _mainBase.AddUnit(unit);
-        }
     }
 
     private void OnDrawGizmos()

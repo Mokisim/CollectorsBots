@@ -8,10 +8,12 @@ public class BuildingsGreed : MonoBehaviour
     [SerializeField] private Camera _mainCamera;
     [SerializeField] private List<Building> _buildingsOnLevel;
     [SerializeField] private BuildingsPool _pool;
+    [SerializeField] private ObjectPool _resourcesPool;
+    [SerializeField] private ResourceWatcher _resourcesWatcher;
 
     private Building[,] _grid;
     private Building _flyingBuilding;
-    
+
     private bool _available;
 
     public event Action<Building> BuildingBuilded;
@@ -69,17 +71,6 @@ public class BuildingsGreed : MonoBehaviour
         }
     }
 
-    private void OnDisable()
-    {
-        foreach(Building building in _buildingsOnLevel)
-        {
-            if(building != null && building.TryGetComponent(out Flag flag) == true)
-            {
-                flag.BaseBuilded -= SwapBuildings;
-            }
-        }
-    }
-
     public void StartPlacingBuilding(Building buildingPrefab)
     {
         if (_flyingBuilding != null)
@@ -119,6 +110,46 @@ public class BuildingsGreed : MonoBehaviour
         }
     }
 
+    public void SwapBuildings(Building originalBuilding, Building newBuilding)
+    {
+        var buildedBuilding = _pool.GetObject(newBuilding, newBuilding.IsFlag);
+        buildedBuilding.gameObject.SetActive(true);
+        buildedBuilding.transform.position = originalBuilding.transform.position;
+
+        DestroyBuilding(originalBuilding);
+
+        int newBuildingWorldPositionX = Mathf.RoundToInt(buildedBuilding.transform.position.x);
+        int newBuildingWorldPositionY = Mathf.RoundToInt(buildedBuilding.transform.position.z);
+
+        AddBuilding(newBuildingWorldPositionX, newBuildingWorldPositionY, buildedBuilding);
+        _buildingsOnLevel.Add(buildedBuilding);
+    }
+
+    public void SwapBuildings(Building originalBuilding, Building newBuilding, Unit unit = null)
+    {
+        var buildedBuilding = _pool.GetObject(newBuilding, newBuilding.IsFlag);
+        buildedBuilding.gameObject.SetActive(true);
+        buildedBuilding.transform.position = originalBuilding.transform.position;
+
+        DestroyBuilding(originalBuilding);
+
+        int newBuildingWorldPositionX = Mathf.RoundToInt(buildedBuilding.transform.position.x);
+        int newBuildingWorldPositionY = Mathf.RoundToInt(buildedBuilding.transform.position.z);
+
+        AddBuilding(newBuildingWorldPositionX, newBuildingWorldPositionY, buildedBuilding);
+        _buildingsOnLevel.Add(buildedBuilding);
+
+        if (buildedBuilding.GetComponentInChildren<Base>() != null)
+        {
+            buildedBuilding.GetComponentInChildren<Base>().SetWatcherAndPool(_resourcesPool, _resourcesWatcher);
+
+            if (unit != null)
+            {
+                buildedBuilding.GetComponentInChildren<Base>().AddUnit(unit);
+            }
+        }
+    }
+
     private bool IsPlaceAlreadyOccupied(int placeX, int placeY)
     {
         bool isPlaceTaken;
@@ -154,21 +185,5 @@ public class BuildingsGreed : MonoBehaviour
         BuildingBuilded?.Invoke(buildedBuilding);
 
         _flyingBuilding = null;
-
-        if(buildedBuilding.TryGetComponent(out Flag flag) == true)
-        {
-            flag.BaseBuilded += SwapBuildings;
-        }
-    }
-
-    private void SwapBuildings(Building originalBuilding, Building newBuilding)
-    {
-        DestroyBuilding(originalBuilding);
-
-        int newBuildingWorldPositionX = Mathf.RoundToInt(newBuilding.transform.position.x);
-        int newBuildingWorldPositionY = Mathf.RoundToInt(newBuilding.transform.position.z);
-
-        AddBuilding(newBuildingWorldPositionX, newBuildingWorldPositionY, newBuilding);
-        _buildingsOnLevel.Add(newBuilding);
     }
 }

@@ -3,69 +3,25 @@ using UnityEngine;
 
 public class MouseObjectDetection : MonoBehaviour
 {
-    [SerializeField] private BuildingsGreed _greed;
-    [SerializeField] private Building _prefab;
+    private int _leftMouseButton = 0;
 
-    private Base _base;
+    public event Action<Base> BaseClicked;
 
-    private int _minBaseFlags = 0;
-    private int _maxBaseFlags = 1;
-
-    private void Awake()
+    private void Update()
     {
-        if (_greed == null)
+        if (Input.GetMouseButtonDown(_leftMouseButton) == true)
         {
-            _greed = FindObjectOfType<BuildingsGreed>();
-        }
-    }
+            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
 
-    private void OnEnable()
-    {
-        _greed.BuildingBuilded += GiveBuilding;
-    }
+            RaycastHit hit;
 
-    private void OnDisable()
-    {
-        _greed.BuildingBuilded -= GiveBuilding;
-    }
-
-    private void OnMouseDown()
-    {
-        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-
-        RaycastHit hit;
-
-        if (Physics.Raycast(ray, out hit))
-        {
-            if (hit.collider.TryGetComponent(out Base clickedBase) == true)
+            if (Physics.Raycast(ray, out hit))
             {
-                if (clickedBase != null) 
+                if (hit.collider.TryGetComponent(out Base clickedBase) == true && clickedBase != null)
                 {
-                    UpdateBase(clickedBase);
-                }
-
-                if (clickedBase.BaseFlag == _minBaseFlags && clickedBase.AllUnits.Count > clickedBase.MinUnitsCount)
-                {
-                    _greed.StartPlacingBuilding(_prefab);
-                }
-                else if (clickedBase.BaseFlag == _maxBaseFlags && clickedBase.AllUnits.Count > _base.MinUnitsCount)
-                {
-                    _greed.DestroyBuilding(_base.GetFlag());
-                    clickedBase.DeleteFlag();
-                    _greed.StartPlacingBuilding(_prefab);
+                    BaseClicked?.Invoke(clickedBase);
                 }
             }
         }
-    }
-
-    private void GiveBuilding(Building building)
-    {
-        Debug.Log(_base);
-        _base.AddFlag(building);
-    }
-
-    private void UpdateBase(Base currentBase)
-    {
-        _base = currentBase;
     }
 }
